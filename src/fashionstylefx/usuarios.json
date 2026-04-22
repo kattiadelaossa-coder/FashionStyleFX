@@ -1,0 +1,8 @@
+[
+    {
+        "correo": "admin@fashionstyle.com",
+        "password": "admin123",
+        "nombre": "Administrador",
+        "rol": "Admin"
+    }
+]
