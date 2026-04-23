@@ -6,6 +6,7 @@ package fashionstylefx;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -18,6 +19,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  *
@@ -49,11 +54,11 @@ public class LoginController implements Initializable {
     private void cargarUsuariosDesdeJSON() {
         try {
             Gson gson = new Gson();
-            InputStream inputStream = getClass().getResourceAsStream("usuarios.json");
-            InputStreamReader reader = new InputStreamReader(inputStream);
+            FileReader reader = new FileReader("src/fashionstylefx/usuarios.json");
             Type tipoLista = new TypeToken<List<Usuario>>() {
             }.getType();
             listaUsuarios = gson.fromJson(reader, tipoLista);
+            reader.close();
         } catch (Exception e) {
             lblMensaje.setText("Error al cargar usuarios");
             e.printStackTrace();
@@ -81,6 +86,18 @@ public class LoginController implements Initializable {
     }
 
     private void handleRegistrarse() {
-        lblMensaje.setText("Abrir pantalla de registro");
+    try {
+        Parent root = FXMLLoader.load(getClass().getResource("Registro.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Registro");
+        stage.setScene(new Scene(root));
+        stage.show();
+        
+        // Cerrar ventana de Login
+        btnRegistrarse.getScene().getWindow().hide();
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir registro");
     }
+}
 }

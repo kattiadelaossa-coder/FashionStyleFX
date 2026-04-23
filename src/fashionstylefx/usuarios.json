@@ -1,8 +1,1 @@
-[
-    {
-        "correo": "admin@fashionstyle.com",
-        "password": "admin123",
-        "nombre": "Administrador",
-        "rol": "Admin"
-    }
-]
+[{"correo":"admin@fashionstyle.com","password":"admin123","nombre":"Administrador","rol":"Admin"},{"correo":"maria@gmail.com","password":"maria123","nombre":"maria","rol":"Cliente"},{"correo":"mariam@gmail.com","password":"maria123","nombre":"maria","rol":"Cliente"}]
