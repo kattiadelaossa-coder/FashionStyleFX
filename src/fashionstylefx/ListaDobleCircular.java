@@ -54,4 +54,65 @@ public class ListaDobleCircular {
     public boolean estaVacia() {
         return cabeza == null;
     }
+
+    // NUEVO: Obtener el siguiente producto a partir de uno dado
+    public Producto getSiguiente(Producto actual) {
+        if (cabeza == null || actual == null) {
+            return null;
+        }
+
+        NodoProducto temp = cabeza;
+        do {
+            if (temp.getProducto().getId() == actual.getId()) {
+                return temp.getSiguiente().getProducto();
+            }
+            temp = temp.getSiguiente();
+        } while (temp != cabeza);
+
+        return null;
+    }
+
+    // NUEVO: Obtener el anterior producto a partir de uno dado
+    public Producto getAnterior(Producto actual) {
+        if (cabeza == null || actual == null) {
+            return null;
+        }
+
+        NodoProducto temp = cabeza;
+        do {
+            if (temp.getProducto().getId() == actual.getId()) {
+                return temp.getAnterior().getProducto();
+            }
+            temp = temp.getSiguiente();
+        } while (temp != cabeza);
+
+        return null;
+    }
+
+    // NUEVO: Eliminar un producto por ID
+    public boolean eliminar(int id) {
+        if (cabeza == null) {
+            return false;
+        }
+
+        NodoProducto actual = cabeza;
+        do {
+            if (actual.getProducto().getId() == id) {
+                if (tamaño == 1) {
+                    cabeza = null;
+                } else {
+                    actual.getAnterior().setSiguiente(actual.getSiguiente());
+                    actual.getSiguiente().setAnterior(actual.getAnterior());
+                    if (actual == cabeza) {
+                        cabeza = actual.getSiguiente();
+                    }
+                }
+                tamaño--;
+                return true;
+            }
+            actual = actual.getSiguiente();
+        } while (actual != cabeza);
+
+        return false;
+    }
 }

@@ -15,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -26,74 +25,86 @@ import javafx.scene.layout.VBox;
 public class CatalogoController implements Initializable {
 
     @FXML
-    private GridPane gridProductos;
+    private VBox tarjetaProducto;
     @FXML
-    private Label lblMensaje;
+    private Label lblNombre;
+    @FXML
+    private Label lblPrecio;
+    @FXML
+    private Label lblCategoria;
+    @FXML
+    private Button btnSiguiente;
+    @FXML
+    private Button btnAnterior;
     @FXML
     private Button btnCerrarSesion;
+    @FXML
+    private Label lblMensaje;
 
-    private List<Producto> listaProductos;
+    private ListaDobleCircular listaCircular;
+    private Producto productoActual;
+    private int indiceActual;
+
     private final String ARCHIVO_PRODUCTOS = "src/fashionstylefx/productos.json";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cargarProductos();
-        mostrarProductos();
+        cargarProductosEnListaCircular();
 
-        if (btnCerrarSesion != null) {
-            btnCerrarSesion.setOnAction(event -> handleCerrarSesion());
+        if (listaCircular != null && !listaCircular.estaVacia()) {
+            indiceActual = 0;
+            productoActual = listaCircular.get(indiceActual);
+            mostrarProductoActual();
         }
+
+        btnSiguiente.setOnAction(event -> handleSiguiente());
+        btnAnterior.setOnAction(event -> handleAnterior());
+        btnCerrarSesion.setOnAction(event -> handleCerrarSesion());
     }
 
-    private void cargarProductos() {
+    private void cargarProductosEnListaCircular() {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_PRODUCTOS);
             Type tipoLista = new TypeToken<List<Producto>>() {
             }.getType();
-            listaProductos = gson.fromJson(reader, tipoLista);
+            List<Producto> productos = gson.fromJson(reader, tipoLista);
             reader.close();
+
+            listaCircular = new ListaDobleCircular();
+            for (Producto p : productos) {
+                listaCircular.agregar(p);
+            }
+
+            lblMensaje.setText("Productos cargados: " + listaCircular.getTamaño());
         } catch (Exception e) {
             lblMensaje.setText("Error al cargar productos");
             e.printStackTrace();
         }
     }
 
-    private void mostrarProductos() {
-        int fila = 0;
-        int columna = 0;
-
-        for (Producto p : listaProductos) {
-            VBox tarjeta = crearTarjetaProducto(p);
-            gridProductos.add(tarjeta, columna, fila);
-
-            columna++;
-            if (columna == 3) { // 3 columnas por fila
-                columna = 0;
-                fila++;
-            }
+    private void mostrarProductoActual() {
+        if (productoActual != null) {
+            lblNombre.setText(productoActual.getNombre());
+            lblPrecio.setText("$" + productoActual.getPrecio());
+            lblCategoria.setText(productoActual.getCategoria());
         }
     }
 
-    private VBox crearTarjetaProducto(Producto producto) {
-        VBox tarjeta = new VBox(10);
-        tarjeta.setStyle("-fx-padding: 15; -fx-border-color: #E0E0E0; -fx-border-radius: 12; -fx-background-color: white; -fx-background-radius: 12;");
+    private void handleSiguiente() {
+        if (listaCircular != null && !listaCircular.estaVacia()) {
+            indiceActual = (indiceActual + 1) % listaCircular.getTamaño();
+            productoActual = listaCircular.get(indiceActual);
+            mostrarProductoActual();
+        }
+    }
 
-        Label lblNombre = new Label(producto.getNombre());
-        lblNombre.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-
-        Label lblPrecio = new Label("$" + producto.getPrecio());
-        lblPrecio.setStyle("-fx-text-fill: #1E88E5; -fx-font-size: 18px; -fx-font-weight: bold;");
-
-        Label lblCategoria = new Label(producto.getCategoria());
-        lblCategoria.setStyle("-fx-text-fill: #666666; -fx-font-size: 12px;");
-
-        Button btnAgregar = new Button("Agregar al carrito");
-        btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8;");
-
-        tarjeta.getChildren().addAll(lblNombre, lblPrecio, lblCategoria, btnAgregar);
-
-        return tarjeta;
+    private void handleAnterior() {
+        if (listaCircular != null && !listaCircular.estaVacia()) {
+            indiceActual = (indiceActual - 1 + listaCircular.getTamaño()) % listaCircular.getTamaño();
+            productoActual = listaCircular.get(indiceActual);
+            mostrarProductoActual();
+        }
     }
 
     private void handleCerrarSesion() {
