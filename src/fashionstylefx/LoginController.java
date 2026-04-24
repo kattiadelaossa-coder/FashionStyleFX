@@ -74,10 +74,10 @@ public class LoginController implements Initializable {
             return;
         }
 
-        // Buscar usuario en la lista
         for (Usuario u : listaUsuarios) {
             if (u.getCorreo().equals(correo) && u.getPassword().equals(password)) {
                 lblMensaje.setText("¡Login exitoso! Bienvenido " + u.getNombre());
+                abrirCatalogo();
                 return;
             }
         }
@@ -85,19 +85,35 @@ public class LoginController implements Initializable {
         lblMensaje.setText("Correo o contraseña incorrectos");
     }
 
-    private void handleRegistrarse() {
-    try {
-        Parent root = FXMLLoader.load(getClass().getResource("Registro.fxml"));
-        Stage stage = new Stage();
-        stage.setTitle("FashionStyle - Registro");
-        stage.setScene(new Scene(root));
-        stage.show();
-        
-        // Cerrar ventana de Login
-        btnRegistrarse.getScene().getWindow().hide();
-    } catch (Exception e) {
-        e.printStackTrace();
-        lblMensaje.setText("Error al abrir registro");
+    private void abrirCatalogo() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("Catalogo.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("FashionStyle - Catálogo");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Cerrar ventana de Login
+            btnIniciarSesion.getScene().getWindow().hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir catálogo");
+        }
     }
-}
+
+    private void handleRegistrarse() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("Registro.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("FashionStyle - Registro");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Cerrar ventana de Login
+            btnRegistrarse.getScene().getWindow().hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir registro");
+        }
+    }
 }

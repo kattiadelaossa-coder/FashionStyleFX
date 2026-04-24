@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "nombre": "Camiseta Oversize",
+        "precio": 49900,
+        "categoria": "Hombre",
+        "imagen": "camiseta.png"
+    },
+    {
+        "id": 2,
+        "nombre": "Hoodie Negra",
+        "precio": 89900,
+        "categoria": "Hombre",
+        "imagen": "hoodie.png"
+    },
+    {
+        "id": 3,
+        "nombre": "Vestido Verano",
+        "precio": 59900,
+        "categoria": "Mujer",
+        "imagen": "vestido.png"
+    },
+    {
+        "id": 4,
+        "nombre": "Jean Skinny",
+        "precio": 79900,
+        "categoria": "Mujer",
+        "imagen": "jean.png"
+    }
+]
