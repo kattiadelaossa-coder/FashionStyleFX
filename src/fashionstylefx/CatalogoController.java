@@ -38,22 +38,29 @@ public class CatalogoController implements Initializable {
     private Button btnFiltrarMujeres;
     @FXML
     private Button btnFiltrarTodos;
+    @FXML
+private Button btnVerCarrito;
+
+    private static ColaCarrito carrito = new ColaCarrito();
 
     private List<Producto> listaProductosOriginal;
     private List<Producto> listaProductosFiltrada;
     private final String ARCHIVO_PRODUCTOS = "src/fashionstylefx/productos.json";
 
+    public static ColaCarrito getCarrito() {
+        return carrito;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarProductos();
 
-        // Configurar eventos de los botones
         btnFiltrarHombres.setOnAction(event -> filtrarPorCategoria("Hombre"));
         btnFiltrarMujeres.setOnAction(event -> filtrarPorCategoria("Mujer"));
         btnFiltrarTodos.setOnAction(event -> filtrarPorCategoria("Todos"));
         btnCerrarSesion.setOnAction(event -> handleCerrarSesion());
+        btnVerCarrito.setOnAction(event -> abrirCarrito());
 
-        // Mostrar todos los productos al inicio
         filtrarPorCategoria("Todos");
     }
 
@@ -65,6 +72,10 @@ public class CatalogoController implements Initializable {
             }.getType();
             listaProductosOriginal = gson.fromJson(reader, tipoLista);
             reader.close();
+
+            for (Producto p : listaProductosOriginal) {
+                p.setCantidad(0);
+            }
 
             lblMensaje.setText("Productos cargados: " + listaProductosOriginal.size());
         } catch (Exception e) {
@@ -96,12 +107,11 @@ public class CatalogoController implements Initializable {
     }
 
     private void mostrarProductosEnGrid() {
-        // Limpiar el grid antes de mostrar nuevos productos
         gridProductos.getChildren().clear();
 
         int fila = 0;
         int columna = 0;
-        int maxColumnas = 3; // 3 columnas por fila
+        int maxColumnas = 3;
 
         for (Producto p : listaProductosFiltrada) {
             VBox tarjeta = crearTarjetaProducto(p);
@@ -130,9 +140,49 @@ public class CatalogoController implements Initializable {
         Label lblCategoria = new Label(producto.getCategoria());
         lblCategoria.setStyle("-fx-text-fill: #666666; -fx-font-size: 11px;");
 
-        tarjeta.getChildren().addAll(lblNombre, lblPrecio, lblCategoria);
+        Button btnAgregar = new Button("🛒 Agregar");
+        btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+        btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
+
+        tarjeta.getChildren().addAll(lblNombre, lblPrecio, lblCategoria, btnAgregar);
 
         return tarjeta;
+    }
+
+    private void agregarAlCarrito(Producto producto) {
+        // Buscar si el producto ya está en el carrito
+        boolean encontrado = false;
+        ColaCarrito temp = new ColaCarrito();
+        Producto existente = null;
+
+        // Recorrer la cola sin perder los datos
+        while (!carrito.colaVacia()) {
+            Producto p = carrito.valorFrente();
+            if (p.getId() == producto.getId()) {
+                encontrado = true;
+                existente = p;
+            }
+            temp.agregar(p);
+            carrito.quitar();
+        }
+
+        // Restaurar la cola
+        while (!temp.colaVacia()) {
+            carrito.agregar(temp.valorFrente());
+            temp.quitar();
+        }
+
+        if (encontrado && existente != null) {
+            existente.setCantidad(existente.getCantidad() + 1);
+        } else {
+            Producto nuevo = new Producto(producto.getId(), producto.getNombre(),
+                    producto.getPrecio(), producto.getCategoria(),
+                    producto.getImagen());
+            nuevo.setCantidad(1);
+            carrito.agregar(nuevo);
+        }
+
+        lblMensaje.setText("✓ " + producto.getNombre() + " agregado al carrito (Total: " + carrito.getTotalNodos() + " productos)");
     }
 
     private void handleCerrarSesion() {
@@ -150,6 +200,20 @@ public class CatalogoController implements Initializable {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void abrirCarrito() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Carrito.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("FashionStyle - Carrito");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir carrito");
         }
     }
 }

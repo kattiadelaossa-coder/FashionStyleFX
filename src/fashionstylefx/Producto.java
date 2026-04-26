@@ -15,6 +15,7 @@ public class Producto {
     private double precio;
     private String categoria;
     private String imagen;
+    private int cantidad;
 
     public Producto() {
     }
@@ -25,6 +26,7 @@ public class Producto {
         this.precio = precio;
         this.categoria = categoria;
         this.imagen = imagen;
+        this.cantidad = 0;
     }
 
     // Getters y Setters
@@ -66,5 +68,13 @@ public class Producto {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 }

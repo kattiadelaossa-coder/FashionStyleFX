@@ -37,5 +37,6 @@
       <Button fx:id="btnFiltrarMujeres" layoutX="250.0" layoutY="56.0" mnemonicParsing="false" text="👗 Mujeres" />
       <Button fx:id="btnFiltrarTodos" layoutX="80.0" layoutY="56.0" mnemonicParsing="false" text="🏠 Todos" />
       <Button fx:id="btnCerrarSesion" layoutX="499.0" layoutY="56.0" mnemonicParsing="false" text="Cerrar Sesión" />
+      <Button fx:id="btnVerCarrito" layoutX="464.0" layoutY="22.0" mnemonicParsing="false" styleClass="-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;" text="🛒 Ver carrito" />
    </children>
 </AnchorPane>
