@@ -145,4 +145,72 @@ public class ColaCarrito {
         return lista;
     }
 
+    // Aumentar cantidad de un producto
+    public void aumentarCantidad(int idProducto) {
+        ColaCarrito temp = new ColaCarrito();
+        while (!this.colaVacia()) {
+            Producto p = this.valorFrente();
+            if (p.getId() == idProducto) {
+                p.setCantidad(p.getCantidad() + 1);
+            }
+            temp.agregar(p);
+            this.quitar();
+        }
+        while (!temp.colaVacia()) {
+            this.agregar(temp.valorFrente());
+            temp.quitar();
+        }
+    }
+
+// Disminuir cantidad de un producto
+    public void disminuirCantidad(int idProducto) {
+        ColaCarrito temp = new ColaCarrito();
+        while (!this.colaVacia()) {
+            Producto p = this.valorFrente();
+            if (p.getId() == idProducto) {
+                if (p.getCantidad() > 1) {
+                    p.setCantidad(p.getCantidad() - 1);
+                    temp.agregar(p);
+                }
+                // Si cantidad es 1, no se agrega (se elimina)
+            } else {
+                temp.agregar(p);
+            }
+            this.quitar();
+        }
+        while (!temp.colaVacia()) {
+            this.agregar(temp.valorFrente());
+            temp.quitar();
+        }
+    }
+
+// Eliminar producto completamente
+    public void eliminarProducto(int idProducto) {
+        ColaCarrito temp = new ColaCarrito();
+        while (!this.colaVacia()) {
+            Producto p = this.valorFrente();
+            if (p.getId() != idProducto) {
+                temp.agregar(p);
+            }
+            this.quitar();
+        }
+        while (!temp.colaVacia()) {
+            this.agregar(temp.valorFrente());
+            temp.quitar();
+        }
+    }
+
+// Obtener lista de productos para mostrar con cantidad
+    public String[] getListaProductosDetalle() {
+        String[] lista = new String[totalNodos];
+        ColaCarrito temp = copiarCola();
+        int i = 0;
+        while (!temp.colaVacia()) {
+            Producto p = temp.valorFrente();
+            lista[i] = p.getId() + "|" + p.getNombre() + "|" + p.getPrecio() + "|" + p.getCantidad();
+            temp.quitar();
+            i++;
+        }
+        return lista;
+    }
 }
