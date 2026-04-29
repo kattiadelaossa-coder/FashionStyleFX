@@ -38,5 +38,6 @@
       <Button fx:id="btnFiltrarTodos" layoutX="80.0" layoutY="56.0" mnemonicParsing="false" text="🏠 Todos" />
       <Button fx:id="btnCerrarSesion" layoutX="499.0" layoutY="56.0" mnemonicParsing="false" text="Cerrar Sesión" />
       <Button fx:id="btnVerCarrito" layoutX="464.0" layoutY="22.0" mnemonicParsing="false" styleClass="-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;" text="🛒 Ver carrito" />
+      <Button fx:id="btnMisCompras" layoutX="377.0" layoutY="22.0" mnemonicParsing="false" text="Compras" />
    </children>
 </AnchorPane>

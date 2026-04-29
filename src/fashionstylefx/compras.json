@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1,
+    "fecha": "28/04/2026 21:15:42",
+    "total": 149800.0,
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Vestido Verano",
+        "precio": 59900.0,
+        "categoria": "Mujer",
+        "imagen": "vestido.png",
+        "cantidad": 1
+      },
+      {
+        "id": 2,
+        "nombre": "Hoodie Negra",
+        "precio": 89900.0,
+        "categoria": "Hombre",
+        "imagen": "hoodie.png",
+        "cantidad": 1
+      }
+    ]
+  }
+]
