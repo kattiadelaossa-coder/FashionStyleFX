@@ -14,8 +14,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -164,7 +162,8 @@ public class CarritoController implements Initializable {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipoLista = new TypeToken<List<Compra>>() {}.getType();
+            Type tipoLista = new TypeToken<List<Compra>>() {
+            }.getType();
             List<Compra> compras = gson.fromJson(reader, tipoLista);
             reader.close();
 
@@ -188,7 +187,8 @@ public class CarritoController implements Initializable {
 
             try {
                 FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-                Type tipoLista = new TypeToken<List<Compra>>() {}.getType();
+                Type tipoLista = new TypeToken<List<Compra>>() {
+                }.getType();
                 compras = gson.fromJson(reader, tipoLista);
                 reader.close();
                 if (compras == null) {
