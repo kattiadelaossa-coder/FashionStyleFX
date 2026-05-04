@@ -12,20 +12,16 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- *
- * @author pc
- */
 public class LoginController implements Initializable {
 
     @FXML
@@ -35,43 +31,45 @@ public class LoginController implements Initializable {
     @FXML
     private Button btnIniciarSesion;
     @FXML
-    private Button btnRegistrarse;
+    private Label lblRegistrarse;
+    @FXML
+    private Label lblOlvideContrasena;
     @FXML
     private Label lblMensaje;
 
     private List<Usuario> listaUsuarios;
+    private final String ARCHIVO_USUARIOS = "src/fashionstylefx/usuarios.json";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cargarUsuariosDesdeJSON();
-
+        cargarUsuarios();
+        
         btnIniciarSesion.setOnAction(event -> handleIniciarSesion());
-        btnRegistrarse.setOnAction(event -> handleRegistrarse());
+        lblRegistrarse.setOnMouseClicked(event -> handleRegistrarse());
+        lblOlvideContrasena.setOnMouseClicked(event -> handleOlvideContrasena());
     }
-
-    private void cargarUsuariosDesdeJSON() {
+    
+    private void cargarUsuarios() {
         try {
             Gson gson = new Gson();
-            FileReader reader = new FileReader("src/fashionstylefx/usuarios.json");
-            Type tipoLista = new TypeToken<List<Usuario>>() {
-            }.getType();
+            FileReader reader = new FileReader(ARCHIVO_USUARIOS);
+            Type tipoLista = new TypeToken<List<Usuario>>(){}.getType();
             listaUsuarios = gson.fromJson(reader, tipoLista);
             reader.close();
         } catch (Exception e) {
             lblMensaje.setText("Error al cargar usuarios");
-            e.printStackTrace();
         }
     }
 
     private void handleIniciarSesion() {
-        String correo = txtCorreo.getText();
+        String correo = txtCorreo.getText().trim();
         String password = txtPassword.getText();
-
+        
         if (correo.isEmpty() || password.isEmpty()) {
             lblMensaje.setText("Complete todos los campos");
             return;
         }
-
+        
         for (Usuario u : listaUsuarios) {
             if (u.getCorreo().equals(correo) && u.getPassword().equals(password)) {
                 lblMensaje.setText("¡Login exitoso! Bienvenido " + u.getNombre());
@@ -79,10 +77,32 @@ public class LoginController implements Initializable {
                 return;
             }
         }
-
+        
         lblMensaje.setText("Correo o contraseña incorrectos");
     }
-
+    
+    private void handleRegistrarse() {
+        abrirRegistro();
+    }
+    
+    private void handleOlvideContrasena() {
+        lblMensaje.setText("Función en desarrollo. Contacte al administrador.");
+    }
+    
+    private void abrirRegistro() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("Registro.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("FashionStyle - Registro");
+            stage.setScene(new Scene(root));
+            stage.show();
+            
+            btnIniciarSesion.getScene().getWindow().hide();
+        } catch (Exception e) {
+            lblMensaje.setText("Error al abrir registro");
+        }
+    }
+    
     private void abrirCatalogo() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("Catalogo.fxml"));
@@ -90,28 +110,10 @@ public class LoginController implements Initializable {
             stage.setTitle("FashionStyle - Catálogo");
             stage.setScene(new Scene(root));
             stage.show();
-
-            // Cerrar ventana de Login
+            
             btnIniciarSesion.getScene().getWindow().hide();
         } catch (Exception e) {
-            e.printStackTrace();
             lblMensaje.setText("Error al abrir catálogo");
-        }
-    }
-
-    private void handleRegistrarse() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("Registro.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("FashionStyle - Registro");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-            // Cerrar ventana de Login
-            btnRegistrarse.getScene().getWindow().hide();
-        } catch (Exception e) {
-            e.printStackTrace();
-            lblMensaje.setText("Error al abrir registro");
         }
     }
 }

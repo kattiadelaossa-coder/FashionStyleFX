@@ -1,0 +1,88 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 4/05/2026, 6:08:11 p. m.
+    Author     : pc
+*/
+/* Fondo principal con imagen */
+.root {
+    -fx-background-image: url('imagenes/pexels-minasenishino-29210804.jpg');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Tarjeta blanca con sombra */
+.tarjeta {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-background-radius: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 4);
+}
+
+/* Título principal */
+.titulo {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E88E5;
+}
+
+/* Etiquetas de campos */
+.etiqueta-campo {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+.contenedor-campos {
+    -fx-alignment: center;
+    -fx-spacing: 15;
+}
+/* Campos de texto */
+.campo-texto {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 12;
+    -fx-border-width: 1px;
+    -fx-padding: 12 16;
+    -fx-font-size: 14px;
+    -fx-pref-width: 320px;
+    -fx-max-width: 320px;
+}
+
+.campo-texto:focused {
+    -fx-border-color: #1E88E5;
+}
+
+/* Botón primario (azul) */
+.boton-primario {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+}
+
+.boton-primario:hover {
+    -fx-background-color: #1565C0;
+}
+
+/* Enlace */
+.enlace {
+    -fx-text-fill: #1E88E5;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-underline: true;
+}
+
+.enlace:hover {
+    -fx-text-fill: #1565C0;
+}
+
+/* Mensaje de error */
+.mensaje-error {
+    -fx-text-fill: red;
+    -fx-font-size: 12px;
+}

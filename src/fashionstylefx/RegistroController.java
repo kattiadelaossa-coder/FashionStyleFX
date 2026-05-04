@@ -40,7 +40,7 @@ public class RegistroController implements Initializable {
     @FXML
     private Button btnRegistrarse;
     @FXML
-    private Button btnVolverLogin;
+    private Label btnVolverLogin;  
     @FXML
     private Label lblMensaje;
 
