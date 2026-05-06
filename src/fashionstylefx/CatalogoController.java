@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
 
 /**
  * FXML Controller class
@@ -38,15 +39,28 @@ public class CatalogoController implements Initializable {
     private Button btnFiltrarMujeres;
     @FXML
     private Button btnFiltrarTodos;
+
+    // Nuevos elementos del diseño
     @FXML
-    private Button btnVerCarrito;
+    private Button btnInicio;
     @FXML
-    private Button btnMisCompras;
+    private Button btnHombres;
+    @FXML
+    private Button btnMujeres;
+    @FXML
+    private TextField txtBuscar;
+    @FXML
+    private Label btnPerfil;
+    @FXML
+    private Label btnListaDeseos;
+    @FXML
+    private Label btnCarrito;
 
     private static ColaCarrito carrito = new ColaCarrito();
-
     private List<Producto> listaProductosOriginal;
     private List<Producto> listaProductosFiltrada;
+    private String categoriaActual = "Todos";
+
     private final String ARCHIVO_PRODUCTOS = "src/fashionstylefx/productos.json";
 
     public static ColaCarrito getCarrito() {
@@ -57,27 +71,39 @@ public class CatalogoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         cargarProductos();
 
-        btnFiltrarHombres.setOnAction(event -> filtrarPorCategoria("Hombre"));
-        btnFiltrarMujeres.setOnAction(event -> filtrarPorCategoria("Mujer"));
-        btnFiltrarTodos.setOnAction(event -> filtrarPorCategoria("Todos"));
+        // Configurar eventos del menú
+        btnInicio.setOnAction(event -> filtroInicio());
+        btnHombres.setOnAction(event -> filtrarPorCategoria("Hombre"));
+        btnMujeres.setOnAction(event -> filtrarPorCategoria("Mujer"));
+
+        // Configurar búsqueda
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) -> buscarProductos(newVal));
+
+        // Configurar iconos del header
         btnCerrarSesion.setOnAction(event -> handleCerrarSesion());
-        btnVerCarrito.setOnAction(event -> abrirCarrito());
-        btnMisCompras.setOnAction(event -> abrirHistorial());
+        btnPerfil.setOnMouseClicked(event -> abrirPerfil());
+        btnListaDeseos.setOnMouseClicked(event -> abrirListaDeseos());
+        btnCarrito.setOnMouseClicked(event -> abrirCarrito());
 
         filtrarPorCategoria("Todos");
     }
 
-    private void abrirHistorial() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Historial.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("FashionStyle - Historial");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            lblMensaje.setText("Error al abrir historial");
+    private void filtroInicio() {
+        filtrarPorCategoria("Todos");
+        actualizarEstiloMenu("Inicio");
+    }
+
+    private void actualizarEstiloMenu(String activo) {
+        btnInicio.getStyleClass().remove("boton-categoria-activo");
+        btnHombres.getStyleClass().remove("boton-categoria-activo");
+        btnMujeres.getStyleClass().remove("boton-categoria-activo");
+
+        if (activo.equals("Inicio")) {
+            btnInicio.getStyleClass().add("boton-categoria-activo");
+        } else if (activo.equals("Hombres")) {
+            btnHombres.getStyleClass().add("boton-categoria-activo");
+        } else if (activo.equals("Mujeres")) {
+            btnMujeres.getStyleClass().add("boton-categoria-activo");
         }
     }
 
@@ -102,16 +128,26 @@ public class CatalogoController implements Initializable {
     }
 
     private void filtrarPorCategoria(String categoria) {
+        this.categoriaActual = categoria;
         listaProductosFiltrada = new ArrayList<>();
 
         if (categoria.equals("Todos")) {
             listaProductosFiltrada = new ArrayList<>(listaProductosOriginal);
-        } else {
+            actualizarEstiloMenu("Inicio");
+        } else if (categoria.equals("Hombre")) {
             for (Producto p : listaProductosOriginal) {
-                if (p.getCategoria().equals(categoria)) {
+                if (p.getCategoria().equals("Hombre")) {
                     listaProductosFiltrada.add(p);
                 }
             }
+            actualizarEstiloMenu("Hombres");
+        } else if (categoria.equals("Mujer")) {
+            for (Producto p : listaProductosOriginal) {
+                if (p.getCategoria().equals("Mujer")) {
+                    listaProductosFiltrada.add(p);
+                }
+            }
+            actualizarEstiloMenu("Mujeres");
         }
 
         mostrarProductosEnGrid();
@@ -119,7 +155,32 @@ public class CatalogoController implements Initializable {
         if (listaProductosFiltrada.isEmpty()) {
             lblMensaje.setText("No hay productos en la categoría " + categoria);
         } else {
-            lblMensaje.setText("Mostrando " + listaProductosFiltrada.size() + " productos de " + categoria);
+            lblMensaje.setText("Mostrando " + listaProductosFiltrada.size() + " productos");
+        }
+    }
+
+    private void buscarProductos(String textoBusqueda) {
+        if (textoBusqueda == null || textoBusqueda.isEmpty()) {
+            filtrarPorCategoria(categoriaActual);
+            return;
+        }
+
+        List<Producto> productosFiltrados = new ArrayList<>();
+        String busqueda = textoBusqueda.toLowerCase();
+
+        for (Producto p : listaProductosOriginal) {
+            if (p.getNombre().toLowerCase().contains(busqueda)) {
+                productosFiltrados.add(p);
+            }
+        }
+
+        listaProductosFiltrada = productosFiltrados;
+        mostrarProductosEnGrid();
+
+        if (listaProductosFiltrada.isEmpty()) {
+            lblMensaje.setText("No se encontraron productos para: " + textoBusqueda);
+        } else {
+            lblMensaje.setText("Se encontraron " + listaProductosFiltrada.size() + " productos");
         }
     }
 
@@ -128,7 +189,7 @@ public class CatalogoController implements Initializable {
 
         int fila = 0;
         int columna = 0;
-        int maxColumnas = 3;
+        int maxColumnas = 4;
 
         for (Producto p : listaProductosFiltrada) {
             VBox tarjeta = crearTarjetaProducto(p);
@@ -167,12 +228,10 @@ public class CatalogoController implements Initializable {
     }
 
     private void agregarAlCarrito(Producto producto) {
-        // Buscar si el producto ya está en el carrito
         boolean encontrado = false;
         ColaCarrito temp = new ColaCarrito();
         Producto existente = null;
 
-        // Recorrer la cola sin perder los datos
         while (!carrito.colaVacia()) {
             Producto p = carrito.valorFrente();
             if (p.getId() == producto.getId()) {
@@ -183,7 +242,6 @@ public class CatalogoController implements Initializable {
             carrito.quitar();
         }
 
-        // Restaurar la cola
         while (!temp.colaVacia()) {
             carrito.agregar(temp.valorFrente());
             temp.quitar();
@@ -199,8 +257,34 @@ public class CatalogoController implements Initializable {
             carrito.agregar(nuevo);
         }
 
-        lblMensaje.setText("✓ " + producto.getNombre() + " agregado al carrito (Total: " + carrito.getTotalNodos() + " productos)");
+        lblMensaje.setText("✓ " + producto.getNombre() + " agregado al carrito");
     }
+
+    private void abrirPerfil() {
+        lblMensaje.setText("Pantalla de perfil en desarrollo");
+    }
+
+    private void abrirListaDeseos() {
+        lblMensaje.setText("Pantalla de lista de deseos en desarrollo");
+    }
+
+    private void abrirCarrito() {
+    try {
+        // Método más seguro para cargar el FXML
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
+        loader.setLocation(getClass().getResource("Carrito.fxml"));
+        javafx.scene.Parent root = loader.load();
+        
+        javafx.stage.Stage stage = new javafx.stage.Stage();
+        stage.setTitle("FashionStyle - Carrito");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir carrito: " + e.getMessage());
+    }
+}
 
     private void handleCerrarSesion() {
         btnCerrarSesion.getScene().getWindow().hide();
@@ -217,20 +301,6 @@ public class CatalogoController implements Initializable {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void abrirCarrito() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Carrito.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("FashionStyle - Carrito");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            lblMensaje.setText("Error al abrir carrito");
         }
     }
 }

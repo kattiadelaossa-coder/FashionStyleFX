@@ -86,3 +86,158 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-text-fill: red;
     -fx-font-size: 12px;
 }
+
+
+/* ========== ESTILOS PARA CATÁLOGO ========== */
+
+/* Fondo del catálogo */
+.fondo-catalogo {
+    -fx-background-color: #F5F5F5;
+}
+
+/* Header */
+.header {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+}
+
+/* Logo en header */
+.logo-header {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E88E5;
+}
+
+/* Barra de búsqueda */
+.barra-busqueda {
+    -fx-background-color: #F0F0F0;
+    -fx-background-radius: 20;
+    -fx-padding: 8 16;
+    -fx-font-size: 14px;
+}
+
+/* Iconos del header */
+.icono-header {
+    -fx-cursor: hand;
+    -fx-font-size: 20px;
+}
+
+/* Menú de categorías */
+.menu-categoria {
+    -fx-background-color: white;
+    -fx-padding: 10 0;
+}
+
+.boton-categoria {
+    -fx-background-color: transparent;
+    -fx-text-fill: #666666;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.boton-categoria:hover {
+    -fx-text-fill: #1E88E5;
+}
+
+.boton-categoria-activo {
+    -fx-text-fill: #1E88E5;
+    -fx-font-weight: bold;
+    -fx-border-color: #1E88E5;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* Tarjeta de producto */
+.tarjeta-producto {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);
+    -fx-padding: 12;
+    -fx-spacing: 8;
+}
+
+.imagen-producto {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 12;
+    -fx-pref-width: 256;
+    -fx-pref-height: 180;
+}
+
+.nombre-producto {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.precio-producto {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E88E5;
+}
+
+.calificacion-producto {
+    -fx-font-size: 12px;
+    -fx-text-fill: #FFC107;
+}
+
+.boton-producto {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.boton-producto:hover {
+    -fx-background-color: #1565C0;
+}
+
+.boton-corazon {
+    -fx-background-color: transparent;
+    -fx-text-fill: #999999;
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+}
+
+.boton-corazon:hover {
+    -fx-text-fill: #E53935;
+}
+
+/* ========== ESTILOS PARA CARRITO ========== */
+.fondo-catalogo {
+    -fx-background-color: #F5F5F5;
+}
+
+.titulo-seccion {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E88E5;
+}
+
+.tarjeta-resumen {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);
+}
+
+.titulo-resumen {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.boton-primario {
+    -fx-background-color: #1E88E5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+}
+
+.boton-primario:hover {
+    -fx-background-color: #1565C0;
+}

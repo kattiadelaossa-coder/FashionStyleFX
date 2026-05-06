@@ -105,15 +105,30 @@ public class LoginController implements Initializable {
     
     private void abrirCatalogo() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Catalogo.fxml"));
+            // Método más robusto para cargar FXML
+            URL url = getClass().getResource("/fashionstylefx/Catalogo.fxml");
+            if (url == null) {
+                // Si no funciona con la barra, probamos sin ella
+                url = getClass().getResource("Catalogo.fxml");
+            }
+
+            if (url == null) {
+                lblMensaje.setText("Error: No se encuentra Catalogo.fxml");
+                return;
+            }
+
+            Parent root = FXMLLoader.load(url);
             Stage stage = new Stage();
             stage.setTitle("FashionStyle - Catálogo");
             stage.setScene(new Scene(root));
             stage.show();
-            
+
+            // Cerrar ventana de Login
             btnIniciarSesion.getScene().getWindow().hide();
+
         } catch (Exception e) {
-            lblMensaje.setText("Error al abrir catálogo");
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir catálogo: " + e.getMessage());
         }
     }
 }
