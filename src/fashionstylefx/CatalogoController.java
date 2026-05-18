@@ -6,7 +6,9 @@ package fashionstylefx;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.Image;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 
 /**
  * FXML Controller class
@@ -203,30 +206,58 @@ public class CatalogoController implements Initializable {
         }
     }
 
-    private VBox crearTarjetaProducto(Producto producto) {
-        VBox tarjeta = new VBox(8);
-        tarjeta.setStyle("-fx-padding: 12; -fx-border-color: #E0E0E0; -fx-border-radius: 12; -fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);");
-        tarjeta.setPrefWidth(200);
+   private VBox crearTarjetaProducto(Producto producto) {
+    VBox tarjeta = new VBox(8);
+    tarjeta.setStyle("-fx-padding: 12; -fx-border-color: #E0E0E0; -fx-border-radius: 12; -fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);");
+    tarjeta.setPrefWidth(200);
+    tarjeta.setAlignment(javafx.geometry.Pos.CENTER);
 
-        Label lblNombre = new Label(producto.getNombre());
-        lblNombre.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-wrap-text: true;");
-        lblNombre.setPrefWidth(180);
-
-        Label lblPrecio = new Label("$" + producto.getPrecio());
-        lblPrecio.setStyle("-fx-text-fill: #1E88E5; -fx-font-size: 16px; -fx-font-weight: bold;");
-
-        Label lblCategoria = new Label(producto.getCategoria());
-        lblCategoria.setStyle("-fx-text-fill: #666666; -fx-font-size: 11px;");
-
-        Button btnAgregar = new Button("🛒 Agregar");
-        btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
-        btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
-
-        tarjeta.getChildren().addAll(lblNombre, lblPrecio, lblCategoria, btnAgregar);
-
-        return tarjeta;
+    // ========== AGREGAR IMAGEN ==========
+    ImageView imagen = new ImageView();
+    try {
+        // Cargar la imagen desde la carpeta imagenes
+        String rutaImagen = "imagenes/" + producto.getImagen();
+        InputStream inputStream = getClass().getResourceAsStream(rutaImagen);
+        if (inputStream != null) {
+            Image img = new Image(inputStream);
+            imagen.setImage(img);
+            imagen.setFitWidth(180);
+            imagen.setFitHeight(180);
+            imagen.setPreserveRatio(true);
+        } else {
+            // Si no encuentra la imagen, mostrar un placeholder
+            imagen.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 8;");
+            imagen.setFitWidth(180);
+            imagen.setFitHeight(180);
+        }
+    } catch (Exception e) {
+        // Si hay error, mostrar placeholder
+        imagen.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 8;");
+        imagen.setFitWidth(180);
+        imagen.setFitHeight(180);
     }
+    // ===================================
 
+    Label lblNombre = new Label(producto.getNombre());
+    lblNombre.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-wrap-text: true;");
+    lblNombre.setPrefWidth(180);
+    lblNombre.setAlignment(javafx.geometry.Pos.CENTER);
+
+    Label lblPrecio = new Label("$" + producto.getPrecio());
+    lblPrecio.setStyle("-fx-text-fill: #1E88E5; -fx-font-size: 16px; -fx-font-weight: bold;");
+
+    Label lblCategoria = new Label(producto.getCategoria());
+    lblCategoria.setStyle("-fx-text-fill: #666666; -fx-font-size: 11px;");
+
+    Button btnAgregar = new Button("🛒 Agregar");
+    btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+    btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
+
+    // Agregar la imagen primero, luego el resto
+    tarjeta.getChildren().addAll(imagen, lblNombre, lblPrecio, lblCategoria, btnAgregar);
+
+    return tarjeta;
+}
     private void agregarAlCarrito(Producto producto) {
         boolean encontrado = false;
         ColaCarrito temp = new ColaCarrito();
