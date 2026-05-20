@@ -1,0 +1,96 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
+ */
+package fashionstylefx;
+
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+/**
+ * FXML Controller class
+ *
+ * @author pc
+ */
+public class PerfilController implements Initializable {
+
+    @FXML
+    private Label lblNombre;
+    @FXML
+    private Label lblCorreo;
+    @FXML
+    private Label lblTelefono;
+    @FXML
+    private Label lblMiembroDesde;
+    @FXML
+    private Button btnEditar;
+    @FXML
+    private Button btnCerrarSesion;
+    @FXML
+    private Label lblMisCompras;
+    @FXML
+    private Label lblListaDeseos;
+    @FXML
+    private Label lblMensaje;
+
+    private Usuario usuarioActual;
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        cargarUsuarioActual();
+
+        btnEditar.setOnAction(event -> editarPerfil());
+        btnCerrarSesion.setOnAction(event -> cerrarSesion());
+        lblMisCompras.setOnMouseClicked(event -> abrirHistorial());
+        lblListaDeseos.setOnMouseClicked(event -> abrirListaDeseos());
+    }
+
+    private void cargarUsuarioActual() {
+        // Por ahora, cargar datos de prueba (después se conectará con Login)
+        usuarioActual = new Usuario("usuario@fashionstyle.com", "123456", "María González", "Cliente");
+
+        lblNombre.setText(usuarioActual.getNombre());
+        lblCorreo.setText(usuarioActual.getCorreo());
+        lblTelefono.setText("Teléfono: 300 123 4567");
+        lblMiembroDesde.setText("Miembro desde: 20/05/2026");
+    }
+
+    private void editarPerfil() {
+        lblMensaje.setText("Función de edición en desarrollo");
+    }
+
+    private void cerrarSesion() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Login.fxml"));
+            javafx.scene.Parent root = loader.load();
+            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.setTitle("FashionStyle - Login");
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al cerrar sesión");
+        }
+    }
+
+    private void abrirHistorial() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Historial.fxml"));
+            javafx.scene.Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("FashionStyle - Historial");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            lblMensaje.setText("Error al abrir historial");
+        }
+    }
+
+    private void abrirListaDeseos() {
+        lblMensaje.setText("Pantalla de lista de deseos en desarrollo");
+    }
+}

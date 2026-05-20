@@ -22,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -292,8 +293,18 @@ public class CatalogoController implements Initializable {
     }
 
     private void abrirPerfil() {
-        lblMensaje.setText("Pantalla de perfil en desarrollo");
+    try {
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Perfil.fxml"));
+        javafx.scene.Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Mi Perfil");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir perfil");
     }
+}
 
     private void abrirListaDeseos() {
         lblMensaje.setText("Pantalla de lista de deseos en desarrollo");

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" styleClass="fondo-catalogo" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.PerfilController">
+    <children>
+        <VBox spacing="20.0" alignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <children>
+                <!-- Título -->
+                <Label styleClass="titulo-seccion" text="Mi Perfil" />
+                
+                <!-- Tarjeta de perfil -->
+                <VBox styleClass="tarjeta-resumen" spacing="20.0" alignment="CENTER" maxWidth="500.0">
+                    <children>
+                        <!-- Foto de perfil (círculo) -->
+                        <Circle radius="60.0" style="-fx-fill: #1E88E5; -fx-stroke: white; -fx-stroke-width: 3;" />
+                        <Label style="-fx-font-size: 40px; -fx-text-fill: white;" text="👤" layoutX="0" layoutY="0" />
+                        
+                        <!-- Nombre -->
+                        <Label fx:id="lblNombre" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Nombre" />
+                        
+                        <!-- Correo -->
+                        <Label fx:id="lblCorreo" style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="correo@ejemplo.com" />
+                        
+                        <!-- Teléfono -->
+                        <Label fx:id="lblTelefono" style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="Teléfono: 000 000 0000" />
+                        
+                        <!-- Miembro desde -->
+                        <Label fx:id="lblMiembroDesde" style="-fx-font-size: 12px; -fx-text-fill: #999999;" text="Miembro desde: --/--/----" />
+                        
+                        <Separator prefWidth="400.0" />
+                        
+                        <!-- Botones de acción -->
+                        <HBox spacing="20.0" alignment="CENTER">
+                            <children>
+                                <Button fx:id="btnEditar" styleClass="boton-primario" text="EDITAR PERFIL" />
+                                <Button fx:id="btnCerrarSesion" style="-fx-background-color: transparent; -fx-border-color: #E53935; -fx-border-radius: 8; -fx-text-fill: #E53935;" text="CERRAR SESIÓN" />
+                            </children>
+                        </HBox>
+                        
+                        <!-- Enlaces rápidos -->
+                        <HBox spacing="20.0" alignment="CENTER">
+                            <children>
+                                <Label fx:id="lblMisCompras" styleClass="enlace" text="📦 Mis Compras" />
+                                <Label fx:id="lblListaDeseos" styleClass="enlace" text="❤️ Lista de Deseos" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                
+                <!-- Mensaje -->
+                <Label fx:id="lblMensaje" style="-fx-text-fill: red;" text="" />
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
