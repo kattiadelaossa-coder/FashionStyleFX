@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package fashionstylefx;
-
+import java.io.File;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
@@ -43,6 +43,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarUsuarios();
+
 
         btnIniciarSesion.setOnAction(event -> handleIniciarSesion());
         lblRegistrarse.setOnMouseClicked(event -> handleRegistrarse());
@@ -139,17 +140,18 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void abrirAdminDashboard() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("FashionStyle - Admin Dashboard");
-            stage.setScene(new Scene(root));
-            stage.show();
-            btnIniciarSesion.getScene().getWindow().hide();
-        } catch (Exception e) {
-            e.printStackTrace();
-            lblMensaje.setText("Error al abrir admin dashboard: " + e.getMessage());
-        }
+   private void abrirAdminDashboard() {
+    try {
+        System.out.println("=== ABRIENDO ADMIN DASHBOARD ===");
+        Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Admin Dashboard");
+        stage.setScene(new Scene(root));
+        stage.show();
+        btnIniciarSesion.getScene().getWindow().hide();
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir admin dashboard: " + e.getMessage());
     }
+}
 }
