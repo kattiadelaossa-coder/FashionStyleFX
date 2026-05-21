@@ -7,20 +7,27 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
 
 <AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" styleClass="fondo-catalogo" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.PerfilController">
     <children>
         <VBox spacing="20.0" alignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
-                <!-- Título -->
-                <Label styleClass="titulo-seccion" text="Mi Perfil" />
-                
-                <!-- Tarjeta de perfil -->
+                <!-- Tarjeta de perfil (todo dentro de ella, incluido el título) -->
                 <VBox styleClass="tarjeta-resumen" spacing="20.0" alignment="CENTER" maxWidth="500.0">
                     <children>
-                        <!-- Foto de perfil (círculo) -->
-                        <Circle radius="60.0" style="-fx-fill: #1E88E5; -fx-stroke: white; -fx-stroke-width: 3;" />
-                        <Label style="-fx-font-size: 40px; -fx-text-fill: white;" text="👤" layoutX="0" layoutY="0" />
+                        <!-- Título dentro de la tarjeta -->
+                        <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="Mi Perfil" />
+                        
+                        <Separator prefWidth="400.0" />
+                        
+                        <!-- Foto de perfil (círculo centrado) -->
+                        <StackPane alignment="CENTER">
+                            <children>
+                                <Circle radius="60.0" style="-fx-fill: #1E88E5; -fx-stroke: white; -fx-stroke-width: 3;" />
+                                <Label style="-fx-font-size: 50px; -fx-text-fill: white;" text="👤" />
+                            </children>
+                        </StackPane>
                         
                         <!-- Nombre -->
                         <Label fx:id="lblNombre" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Nombre" />

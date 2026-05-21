@@ -43,17 +43,18 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarUsuarios();
-        
+
         btnIniciarSesion.setOnAction(event -> handleIniciarSesion());
         lblRegistrarse.setOnMouseClicked(event -> handleRegistrarse());
         lblOlvideContrasena.setOnMouseClicked(event -> handleOlvideContrasena());
     }
-    
+
     private void cargarUsuarios() {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_USUARIOS);
-            Type tipoLista = new TypeToken<List<Usuario>>(){}.getType();
+            Type tipoLista = new TypeToken<List<Usuario>>() {
+            }.getType();
             listaUsuarios = gson.fromJson(reader, tipoLista);
             reader.close();
         } catch (Exception e) {
@@ -64,31 +65,37 @@ public class LoginController implements Initializable {
     private void handleIniciarSesion() {
         String correo = txtCorreo.getText().trim();
         String password = txtPassword.getText();
-        
+
         if (correo.isEmpty() || password.isEmpty()) {
             lblMensaje.setText("Complete todos los campos");
             return;
         }
-        
+
         for (Usuario u : listaUsuarios) {
             if (u.getCorreo().equals(correo) && u.getPassword().equals(password)) {
                 lblMensaje.setText("¡Login exitoso! Bienvenido " + u.getNombre());
-                abrirCatalogo();
+
+                if (u.getRol() != null && u.getRol().equals("Admin")) {
+                    abrirAdminDashboard();  // Abre panel de admin
+                } else {
+                    abrirCatalogo();        // Abre catálogo normal
+                }
+                // ===========================================
                 return;
             }
         }
-        
+
         lblMensaje.setText("Correo o contraseña incorrectos");
     }
-    
+
     private void handleRegistrarse() {
         abrirRegistro();
     }
-    
+
     private void handleOlvideContrasena() {
         lblMensaje.setText("Función en desarrollo. Contacte al administrador.");
     }
-    
+
     private void abrirRegistro() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("Registro.fxml"));
@@ -96,13 +103,13 @@ public class LoginController implements Initializable {
             stage.setTitle("FashionStyle - Registro");
             stage.setScene(new Scene(root));
             stage.show();
-            
+
             btnIniciarSesion.getScene().getWindow().hide();
         } catch (Exception e) {
             lblMensaje.setText("Error al abrir registro");
         }
     }
-    
+
     private void abrirCatalogo() {
         try {
             // Método más robusto para cargar FXML
@@ -129,6 +136,20 @@ public class LoginController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             lblMensaje.setText("Error al abrir catálogo: " + e.getMessage());
+        }
+    }
+
+    private void abrirAdminDashboard() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("FashionStyle - Admin Dashboard");
+            stage.setScene(new Scene(root));
+            stage.show();
+            btnIniciarSesion.getScene().getWindow().hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir admin dashboard: " + e.getMessage());
         }
     }
 }

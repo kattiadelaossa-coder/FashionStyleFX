@@ -254,3 +254,45 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-padding: 20;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);
 }
+
+/* ========== ESTILOS PARA ADMIN DASHBOARD ========== */
+
+/* Tarjeta de estadísticas */
+.tarjeta-resumen {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);
+}
+
+.tarjeta-resumen:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 6);
+}
+
+/* Botones de gestión */
+.boton-gestion {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E88E5;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+}
+
+.boton-gestion:hover {
+    -fx-background-color: #E3F2FD;
+    -fx-background-radius: 8;
+}
+
+/* Botón cerrar sesión */
+.boton-cerrar {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E53935;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+}
+
+.boton-cerrar:hover {
+    -fx-background-color: #FFEBEE;
+    -fx-background-radius: 8;
+}
