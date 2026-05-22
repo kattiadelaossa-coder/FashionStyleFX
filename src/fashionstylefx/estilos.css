@@ -208,7 +208,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 .fondo-catalogo {
     -fx-background-color: #F5F5F5;
 }
-
+.fondo-admin {
+    -fx-background-color: #E3F2FD;  /* Azul claro */
+}
 .titulo-seccion {
     -fx-font-size: 28px;
     -fx-font-weight: bold;

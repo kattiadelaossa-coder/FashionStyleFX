@@ -16,6 +16,8 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 
 /**
  * FXML Controller class
@@ -38,6 +40,8 @@ public class AdminDashboardController implements Initializable {
     private Button btnCerrarSesion;
     @FXML
     private Label lblMensaje;
+    @FXML
+    private BarChart<String, Number> graficoVentas;
 
     private final String ARCHIVO_PRODUCTOS = "src/fashionstylefx/productos.json";
     private final String ARCHIVO_USUARIOS = "src/fashionstylefx/usuarios.json";
@@ -46,6 +50,7 @@ public class AdminDashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarEstadisticas();
+        cargarGraficoVentas();
         btnCerrarSesion.setOnAction(event -> cerrarSesion());
     }
     
@@ -113,4 +118,21 @@ public class AdminDashboardController implements Initializable {
             lblMensaje.setText("Error al cerrar sesión");
         }
     }
+    
+    private void cargarGraficoVentas() {
+    try {
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Ventas 2026");
+        series.getData().add(new XYChart.Data<>("Enero", 150000));
+        series.getData().add(new XYChart.Data<>("Febrero", 200000));
+        series.getData().add(new XYChart.Data<>("Marzo", 180000));
+        series.getData().add(new XYChart.Data<>("Abril", 250000));
+        series.getData().add(new XYChart.Data<>("Mayo", 300000));
+        
+        graficoVentas.getData().clear();
+        graficoVentas.getData().add(series);
+    } catch (Exception e) {
+        System.out.println("Error al cargar gráfico: " + e.getMessage());
+    }
+}
 }

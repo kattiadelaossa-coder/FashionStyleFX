@@ -2,12 +2,16 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@estilos.css" styleClass="fondo-catalogo" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.AdminDashboardController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #BBDEFB;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.AdminDashboardController">
     <children>
         <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
@@ -20,13 +24,16 @@
                     </children>
                 </HBox>
                 
+                <Separator />
+                
                 <!-- Tarjetas de estadísticas -->
                 <GridPane hgap="20.0" vgap="20.0" alignment="CENTER">
                     <children>
                         <!-- Tarjeta Productos -->
                         <VBox styleClass="tarjeta-resumen" spacing="10.0" alignment="CENTER" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <children>
-                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="📦 Productos" />
+                                <Label style="-fx-font-size: 40px;" text="📦" />
+                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="Productos" />
                                 <Label fx:id="lblTotalProductos" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="0" />
                                 <Button fx:id="btnGestionarProductos" style="-fx-background-color: transparent; -fx-text-fill: #1E88E5;" text="Gestionar" />
                             </children>
@@ -35,7 +42,8 @@
                         <!-- Tarjeta Usuarios -->
                         <VBox styleClass="tarjeta-resumen" spacing="10.0" alignment="CENTER" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <children>
-                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="👥 Usuarios" />
+                                <Label style="-fx-font-size: 40px;" text="👥" />
+                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="Usuarios" />
                                 <Label fx:id="lblTotalUsuarios" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="0" />
                                 <Button fx:id="btnGestionarUsuarios" style="-fx-background-color: transparent; -fx-text-fill: #1E88E5;" text="Gestionar" />
                             </children>
@@ -44,7 +52,8 @@
                         <!-- Tarjeta Pedidos -->
                         <VBox styleClass="tarjeta-resumen" spacing="10.0" alignment="CENTER" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
                             <children>
-                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="🛒 Pedidos" />
+                                <Label style="-fx-font-size: 40px;" text="🛒" />
+                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="Pedidos" />
                                 <Label fx:id="lblTotalPedidos" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="0" />
                                 <Button fx:id="btnGestionarPedidos" style="-fx-background-color: transparent; -fx-text-fill: #1E88E5;" text="Gestionar" />
                             </children>
@@ -53,13 +62,29 @@
                         <!-- Tarjeta Ventas -->
                         <VBox styleClass="tarjeta-resumen" spacing="10.0" alignment="CENTER" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="0">
                             <children>
-                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="💰 Ventas" />
+                                <Label style="-fx-font-size: 40px;" text="💰" />
+                                <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="Ventas" />
                                 <Label fx:id="lblTotalVentas" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="\$0" />
                                 <Label style="-fx-font-size: 12px; -fx-text-fill: #999999;" text="Total acumulado" />
                             </children>
                         </VBox>
                     </children>
                 </GridPane>
+                
+                <Separator />
+                
+                <!-- Gráfico de ventas -->
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Ventas por mes" />
+                <BarChart fx:id="graficoVentas" prefHeight="300.0" prefWidth="900.0">
+                    <xAxis>
+                        <CategoryAxis label="Meses" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Ventas ($)" />
+                    </yAxis>
+                </BarChart>
+                
+                <Separator />
                 
                 <!-- Mensaje -->
                 <Label fx:id="lblMensaje" style="-fx-text-fill: red;" text="" />
