@@ -4,16 +4,13 @@
  */
 package fashionstylefx;
 
-/**
- *
- * @author pc
- */
 public class Usuario {
 
     private String correo;
     private String password;
     private String nombre;
     private String rol;
+    private String telefono;  // ← NUEVO CAMPO
 
     public Usuario() {
     }
@@ -23,6 +20,16 @@ public class Usuario {
         this.password = password;
         this.nombre = nombre;
         this.rol = rol;
+        this.telefono = "";
+    }
+
+    // Constructor completo con teléfono
+    public Usuario(String correo, String password, String nombre, String rol, String telefono) {
+        this.correo = correo;
+        this.password = password;
+        this.nombre = nombre;
+        this.rol = rol;
+        this.telefono = telefono;
     }
 
     // Getters y Setters
@@ -57,4 +64,12 @@ public class Usuario {
     public void setRol(String rol) {
         this.rol = rol;
     }
+
+    public String getTelefono() {
+        return telefono;
+    }  // ← NUEVO
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }  // ← NUEVO
 }

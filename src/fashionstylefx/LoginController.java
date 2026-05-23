@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package fashionstylefx;
-import java.io.File;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
@@ -39,11 +39,17 @@ public class LoginController implements Initializable {
 
     private List<Usuario> listaUsuarios;
     private final String ARCHIVO_USUARIOS = "src/fashionstylefx/usuarios.json";
+    
+    // Variable estática para almacenar el usuario actual
+    private static Usuario usuarioActual;
+    
+    public static Usuario getUsuarioActual() {
+        return usuarioActual;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarUsuarios();
-
 
         btnIniciarSesion.setOnAction(event -> handleIniciarSesion());
         lblRegistrarse.setOnMouseClicked(event -> handleRegistrarse());
@@ -75,13 +81,15 @@ public class LoginController implements Initializable {
         for (Usuario u : listaUsuarios) {
             if (u.getCorreo().equals(correo) && u.getPassword().equals(password)) {
                 lblMensaje.setText("¡Login exitoso! Bienvenido " + u.getNombre());
+                
+                // Guardar el usuario actual
+                usuarioActual = u;
 
                 if (u.getRol() != null && u.getRol().equals("Admin")) {
                     abrirAdminDashboard();  // Abre panel de admin
                 } else {
                     abrirCatalogo();        // Abre catálogo normal
                 }
-                // ===========================================
                 return;
             }
         }
@@ -113,10 +121,8 @@ public class LoginController implements Initializable {
 
     private void abrirCatalogo() {
         try {
-            // Método más robusto para cargar FXML
             URL url = getClass().getResource("/fashionstylefx/Catalogo.fxml");
             if (url == null) {
-                // Si no funciona con la barra, probamos sin ella
                 url = getClass().getResource("Catalogo.fxml");
             }
 
@@ -131,7 +137,6 @@ public class LoginController implements Initializable {
             stage.setScene(new Scene(root));
             stage.show();
 
-            // Cerrar ventana de Login
             btnIniciarSesion.getScene().getWindow().hide();
 
         } catch (Exception e) {
@@ -140,18 +145,18 @@ public class LoginController implements Initializable {
         }
     }
 
-   private void abrirAdminDashboard() {
-    try {
-        System.out.println("=== ABRIENDO ADMIN DASHBOARD ===");
-        Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
-        Stage stage = new Stage();
-        stage.setTitle("FashionStyle - Admin Dashboard");
-        stage.setScene(new Scene(root));
-        stage.show();
-        btnIniciarSesion.getScene().getWindow().hide();
-    } catch (Exception e) {
-        e.printStackTrace();
-        lblMensaje.setText("Error al abrir admin dashboard: " + e.getMessage());
+    private void abrirAdminDashboard() {
+        try {
+            System.out.println("=== ABRIENDO ADMIN DASHBOARD ===");
+            Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("FashionStyle - Admin Dashboard");
+            stage.setScene(new Scene(root));
+            stage.show();
+            btnIniciarSesion.getScene().getWindow().hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir admin dashboard: " + e.getMessage());
+        }
     }
-}
 }

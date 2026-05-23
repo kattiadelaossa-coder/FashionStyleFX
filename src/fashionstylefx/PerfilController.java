@@ -12,11 +12,6 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * FXML Controller class
- *
- * @author pc
- */
 public class PerfilController implements Initializable {
 
     @FXML
@@ -38,8 +33,6 @@ public class PerfilController implements Initializable {
     @FXML
     private Label lblMensaje;
 
-    private Usuario usuarioActual;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarUsuarioActual();
@@ -51,13 +44,25 @@ public class PerfilController implements Initializable {
     }
 
     private void cargarUsuarioActual() {
-        // Por ahora, cargar datos de prueba (después se conectará con Login)
-        usuarioActual = new Usuario("usuario@fashionstyle.com", "123456", "María González", "Cliente");
+        Usuario usuarioActual = LoginController.getUsuarioActual();
 
-        lblNombre.setText(usuarioActual.getNombre());
-        lblCorreo.setText(usuarioActual.getCorreo());
-        lblTelefono.setText("Teléfono: 300 123 4567");
-        lblMiembroDesde.setText("Miembro desde: 20/05/2026");
+        if (usuarioActual != null) {
+            lblNombre.setText(usuarioActual.getNombre());
+            lblCorreo.setText(usuarioActual.getCorreo());
+            // Mostrar el teléfono del usuario
+            String telefono = usuarioActual.getTelefono();
+            if (telefono != null && !telefono.isEmpty()) {
+                lblTelefono.setText("Teléfono: " + telefono);
+            } else {
+                lblTelefono.setText("Teléfono: No registrado");
+            }
+            lblMiembroDesde.setText("Miembro desde: 20/05/2026");
+        } else {
+            lblNombre.setText("Usuario no encontrado");
+            lblCorreo.setText("Inicie sesión nuevamente");
+            lblTelefono.setText("Teléfono: ---");
+            lblMiembroDesde.setText("Miembro desde: ---");
+        }
     }
 
     private void editarPerfil() {

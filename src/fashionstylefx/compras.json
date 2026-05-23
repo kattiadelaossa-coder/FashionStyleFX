@@ -21,5 +21,30 @@
         "cantidad": 1
       }
     ]
+  },
+  {
+    "id": 2,
+    "fecha": "23/05/2026 11:47:46",
+    "total": 149800.0,
+    "cliente": "maria",
+    "estado": "Procesando",
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Hoodie Negra",
+        "precio": 89900.0,
+        "categoria": "Hombre",
+        "imagen": "hoodie.png",
+        "cantidad": 1
+      },
+      {
+        "id": 3,
+        "nombre": "Vestido Verano",
+        "precio": 59900.0,
+        "categoria": "Mujer",
+        "imagen": "vestido.png",
+        "cantidad": 1
+      }
+    ]
   }
 ]

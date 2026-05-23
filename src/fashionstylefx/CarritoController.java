@@ -4,6 +4,17 @@
  */
 package fashionstylefx;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -11,9 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class CarritoController implements Initializable {
 
@@ -36,10 +44,13 @@ public class CarritoController implements Initializable {
 
     private ColaCarrito carrito;
     private final double COSTO_ENVIO = 10000;
+    private final String ARCHIVO_COMPRAS = "src/fashionstylefx/compras.json";
+    private int ultimoId = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         carrito = CatalogoController.getCarrito();
+        cargarUltimoId();
         actualizarVista();
 
         btnComprar.setOnAction(event -> handleComprar());
@@ -125,9 +136,18 @@ public class CarritoController implements Initializable {
             return;
         }
         
+        // Preparar lista de productos desde el carrito
+        List<Producto> productosComprados = new ArrayList<>();
+        while (!carrito.colaVacia()) {
+            productosComprados.add(carrito.valorFrente());
+            carrito.quitar();
+        }
+        
+        // Guardar compra
+        guardarCompra(productosComprados);
+        
         double total = carrito.calcularTotal() + COSTO_ENVIO;
         lblMensaje.setText("Compra realizada con exito! Total: $" + total);
-        carrito.limpiarCola();
         actualizarVista();
     }
 
@@ -149,6 +169,74 @@ public class CarritoController implements Initializable {
             stage.setScene(new javafx.scene.Scene(root));
             stage.setTitle("FashionStyle - Catalogo");
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void cargarUltimoId() {
+        try {
+            File archivo = new File(ARCHIVO_COMPRAS);
+            if (archivo.exists()) {
+                Gson gson = new Gson();
+                FileReader reader = new FileReader(ARCHIVO_COMPRAS);
+                Type tipoLista = new TypeToken<List<Compra>>() {}.getType();
+                List<Compra> compras = gson.fromJson(reader, tipoLista);
+                reader.close();
+                if (compras != null && !compras.isEmpty()) {
+                    ultimoId = compras.get(compras.size() - 1).getId();
+                }
+            }
+        } catch (Exception e) {
+            ultimoId = 0;
+        }
+    }
+    
+    private void guardarCompra(List<Producto> productos) {
+        try {
+            double total = 0;
+            for (Producto p : productos) {
+                total += p.getPrecio() * p.getCantidad();
+            }
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            List<Compra> compras = new ArrayList<>();
+
+            // Leer compras existentes
+            File archivo = new File(ARCHIVO_COMPRAS);
+            if (archivo.exists()) {
+                try {
+                    FileReader reader = new FileReader(ARCHIVO_COMPRAS);
+                    Type tipoLista = new TypeToken<List<Compra>>() {}.getType();
+                    compras = gson.fromJson(reader, tipoLista);
+                    reader.close();
+                    if (compras == null) compras = new ArrayList<>();
+                    if (!compras.isEmpty()) {
+                        ultimoId = compras.get(compras.size() - 1).getId();
+                    }
+                } catch (Exception e) {
+                    compras = new ArrayList<>();
+                }
+            }
+
+            ultimoId++;
+            
+            // Obtener el nombre del cliente logueado
+            String nombreCliente = "Cliente";
+            if (LoginController.getUsuarioActual() != null) {
+                nombreCliente = LoginController.getUsuarioActual().getNombre();
+            }
+            
+            Compra nuevaCompra = new Compra(ultimoId, total, productos, nombreCliente);
+            compras.add(nuevaCompra);
+
+            FileWriter writer = new FileWriter(ARCHIVO_COMPRAS);
+            gson.toJson(compras, writer);
+            writer.close();
+            
+            System.out.println("Compra guardada con ID: " + ultimoId + " Cliente: " + nombreCliente);
+
+        } catch (Exception e) {
+            lblMensaje.setText("Error al guardar compra");
             e.printStackTrace();
         }
     }

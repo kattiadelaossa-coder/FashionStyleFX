@@ -10,21 +10,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.XYChart;
+
 
 /**
  * FXML Controller class
  *
  * @author pc
  */
-
 
 public class AdminDashboardController implements Initializable {
 
@@ -42,6 +45,18 @@ public class AdminDashboardController implements Initializable {
     private Label lblMensaje;
     @FXML
     private BarChart<String, Number> graficoVentas;
+    @FXML
+    private TableView<Compra> tablaPedidos;
+    @FXML
+    private TableColumn<Compra, Integer> colId;
+    @FXML
+    private TableColumn<Compra, String> colCliente;
+    @FXML
+    private TableColumn<Compra, String> colFecha;
+    @FXML
+    private TableColumn<Compra, Double> colTotal;
+    @FXML
+    private TableColumn<Compra, String> colEstado;
 
     private final String ARCHIVO_PRODUCTOS = "src/fashionstylefx/productos.json";
     private final String ARCHIVO_USUARIOS = "src/fashionstylefx/usuarios.json";
@@ -51,7 +66,48 @@ public class AdminDashboardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         cargarEstadisticas();
         cargarGraficoVentas();
+        cargarTablaPedidos();
         btnCerrarSesion.setOnAction(event -> cerrarSesion());
+    }
+    
+    private void cargarTablaPedidos() {
+        try {
+            Gson gson = new Gson();
+            FileReader reader = new FileReader(ARCHIVO_COMPRAS);
+            Type tipo = new TypeToken<List<Compra>>(){}.getType();
+            List<Compra> compras = gson.fromJson(reader, tipo);
+            reader.close();
+            
+            if (compras != null && !compras.isEmpty()) {
+                colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+                colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+                colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+                // Para cliente y estado necesitas datos adicionales
+                colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
+                colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+                
+                tablaPedidos.getItems().setAll(compras);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al cargar pedidos: " + e.getMessage());
+        }
+    }
+    
+    private void cargarGraficoVentas() {
+        try {
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Ventas 2026");
+            series.getData().add(new XYChart.Data<>("Enero", 150000));
+            series.getData().add(new XYChart.Data<>("Febrero", 200000));
+            series.getData().add(new XYChart.Data<>("Marzo", 180000));
+            series.getData().add(new XYChart.Data<>("Abril", 250000));
+            series.getData().add(new XYChart.Data<>("Mayo", 300000));
+            
+            graficoVentas.getData().clear();
+            graficoVentas.getData().add(series);
+        } catch (Exception e) {
+            System.out.println("Error al cargar gráfico: " + e.getMessage());
+        }
     }
     
     private void cargarEstadisticas() {
@@ -65,7 +121,6 @@ public class AdminDashboardController implements Initializable {
             lblTotalProductos.setText(String.valueOf(productos.size()));
         } catch (Exception e) {
             lblTotalProductos.setText("0");
-            System.out.println("Error al cargar productos: " + e.getMessage());
         }
         
         // Usuarios
@@ -78,7 +133,6 @@ public class AdminDashboardController implements Initializable {
             lblTotalUsuarios.setText(String.valueOf(usuarios.size()));
         } catch (Exception e) {
             lblTotalUsuarios.setText("0");
-            System.out.println("Error al cargar usuarios: " + e.getMessage());
         }
         
         // Pedidos y Ventas
@@ -95,15 +149,14 @@ public class AdminDashboardController implements Initializable {
                 for (Compra c : compras) {
                     total += c.getTotal();
                 }
-                lblTotalVentas.setText("$" + total);
+                lblTotalVentas.setText("\\$" + total);
             } else {
                 lblTotalPedidos.setText("0");
-                lblTotalVentas.setText("$0");
+                lblTotalVentas.setText("\\$0");
             }
         } catch (Exception e) {
             lblTotalPedidos.setText("0");
-            lblTotalVentas.setText("$0");
-            System.out.println("Error al cargar compras: " + e.getMessage());
+            lblTotalVentas.setText("\\$0");
         }
     }
     
@@ -118,21 +171,4 @@ public class AdminDashboardController implements Initializable {
             lblMensaje.setText("Error al cerrar sesión");
         }
     }
-    
-    private void cargarGraficoVentas() {
-    try {
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Ventas 2026");
-        series.getData().add(new XYChart.Data<>("Enero", 150000));
-        series.getData().add(new XYChart.Data<>("Febrero", 200000));
-        series.getData().add(new XYChart.Data<>("Marzo", 180000));
-        series.getData().add(new XYChart.Data<>("Abril", 250000));
-        series.getData().add(new XYChart.Data<>("Mayo", 300000));
-        
-        graficoVentas.getData().clear();
-        graficoVentas.getData().add(series);
-    } catch (Exception e) {
-        System.out.println("Error al cargar gráfico: " + e.getMessage());
-    }
-}
 }

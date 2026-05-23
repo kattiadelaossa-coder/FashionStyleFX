@@ -24,7 +24,6 @@ import javafx.scene.control.TextField;
  *
  * @author pc
  */
-
 public class RegistroController implements Initializable {
 
     @FXML
@@ -40,7 +39,7 @@ public class RegistroController implements Initializable {
     @FXML
     private Button btnRegistrarse;
     @FXML
-    private Label btnVolverLogin;  
+    private Label btnVolverLogin;
     @FXML
     private Label lblMensaje;
 
@@ -117,7 +116,8 @@ public class RegistroController implements Initializable {
         }
 
         // Crear nuevo usuario
-        Usuario nuevoUsuario = new Usuario(correo, password, nombre, "Cliente");
+        // Crear nuevo usuario (con teléfono)
+        Usuario nuevoUsuario = new Usuario(correo, password, nombre, "Cliente", telefono);
         listaUsuarios.add(nuevoUsuario);
         guardarUsuarios();
 

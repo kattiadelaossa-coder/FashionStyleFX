@@ -18,17 +18,21 @@ public class Compra {
     private int id;
     private String fecha;
     private double total;
+    private String cliente;
+    private String estado;
     private List<Producto> productos;
 
     public Compra() {
         this.productos = new ArrayList<>();
     }
 
-    public Compra(int id, double total, List<Producto> productos) {
+    public Compra(int id, double total, List<Producto> productos, String cliente) {
         this.id = id;
         this.fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         this.total = total;
         this.productos = productos;
+        this.cliente = cliente;
+        this.estado = "Procesando";
     }
 
     // Getters y Setters
@@ -56,6 +60,22 @@ public class Compra {
         this.total = total;
     }
 
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     public List<Producto> getProductos() {
         return productos;
     }
@@ -64,7 +84,6 @@ public class Compra {
         this.productos = productos;
     }
 
-    // Método para obtener resumen de productos
     public String getResumenProductos() {
         StringBuilder sb = new StringBuilder();
         for (Producto p : productos) {
