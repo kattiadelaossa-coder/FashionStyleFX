@@ -285,3 +285,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-padding: 20;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);
 }
+
+.boton-enlace {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E88E5;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.boton-enlace:hover {
+    -fx-text-fill: #1565C0;
+    -fx-underline: true;
+}

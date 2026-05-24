@@ -145,13 +145,18 @@ public class ColaCarrito {
         return lista;
     }
 
-    // Aumentar cantidad de un producto
+    // Aumentar cantidad de un producto (por 1)
     public void aumentarCantidad(int idProducto) {
+        aumentarCantidad(idProducto, 1);
+    }
+
+    // Aumentar cantidad por un valor específico (sobrecargado)
+    public void aumentarCantidad(int idProducto, int cantidad) {
         ColaCarrito temp = new ColaCarrito();
         while (!this.colaVacia()) {
             Producto p = this.valorFrente();
             if (p.getId() == idProducto) {
-                p.setCantidad(p.getCantidad() + 1);
+                p.setCantidad(p.getCantidad() + cantidad);
             }
             temp.agregar(p);
             this.quitar();
@@ -162,7 +167,7 @@ public class ColaCarrito {
         }
     }
 
-// Disminuir cantidad de un producto
+    // Disminuir cantidad de un producto
     public void disminuirCantidad(int idProducto) {
         ColaCarrito temp = new ColaCarrito();
         while (!this.colaVacia()) {
@@ -184,7 +189,7 @@ public class ColaCarrito {
         }
     }
 
-// Eliminar producto completamente
+    // Eliminar producto completamente
     public void eliminarProducto(int idProducto) {
         ColaCarrito temp = new ColaCarrito();
         while (!this.colaVacia()) {
@@ -200,7 +205,7 @@ public class ColaCarrito {
         }
     }
 
-// Obtener lista de productos para mostrar con cantidad
+    // Obtener lista de productos para mostrar con cantidad
     public String[] getListaProductosDetalle() {
         String[] lista = new String[totalNodos];
         ColaCarrito temp = copiarCola();
@@ -212,5 +217,22 @@ public class ColaCarrito {
             i++;
         }
         return lista;
+    }
+
+    // Verificar si un producto existe en el carrito
+    public boolean existeProducto(int idProducto) {
+        ColaCarrito temp = copiarCola();
+        boolean existe = false;
+
+        while (!temp.colaVacia()) {
+            Producto p = temp.valorFrente();
+            if (p.getId() == idProducto) {
+                existe = true;
+                break;
+            }
+            temp.quitar();
+        }
+
+        return existe;
     }
 }
