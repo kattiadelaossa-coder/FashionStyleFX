@@ -25,6 +25,7 @@
                                 <Label fx:id="btnPerfil" styleClass="icono-header" text="👤" />
                                 <Label fx:id="btnListaDeseos" styleClass="icono-header" text="❤️" />
                                 <Label fx:id="btnCarrito" styleClass="icono-header" text="🛒" />
+                                <Label fx:id="btnMisCompras" styleClass="icono-header" text="📋" />
                                 <Button fx:id="btnCerrarSesion" text="🚪" styleClass="icono-header" />
                             </children>
                         </HBox>

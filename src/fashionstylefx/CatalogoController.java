@@ -59,6 +59,8 @@ public class CatalogoController implements Initializable {
     private Label btnListaDeseos;
     @FXML
     private Label btnCarrito;
+    @FXML
+    private Label btnMisCompras;
 
     private static ColaCarrito carrito = new ColaCarrito();
     private List<Producto> listaProductosOriginal;
@@ -88,7 +90,7 @@ public class CatalogoController implements Initializable {
         btnPerfil.setOnMouseClicked(event -> abrirPerfil());
         btnListaDeseos.setOnMouseClicked(event -> abrirListaDeseos());
         btnCarrito.setOnMouseClicked(event -> abrirCarrito());
-
+        btnMisCompras.setOnMouseClicked(event -> abrirHistorial());
         filtrarPorCategoria("Todos");
     }
 
@@ -345,4 +347,18 @@ public class CatalogoController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    private void abrirHistorial() {
+    try {
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Historial.fxml"));
+        javafx.scene.Parent root = loader.load();
+        javafx.stage.Stage stage = new javafx.stage.Stage();
+        stage.setTitle("FashionStyle - Mis Compras");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir historial");
+    }
+}
 }
