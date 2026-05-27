@@ -60,57 +60,57 @@ public class CarritoController implements Initializable {
 
     private void actualizarVista() {
         contenedorProductos.getChildren().clear();
-        
+
         double subtotal = 0;
-        
+
         ColaCarrito temp = new ColaCarrito();
         while (!carrito.colaVacia()) {
             Producto p = carrito.valorFrente();
             subtotal += p.getPrecio() * p.getCantidad();
-            
+
             HBox fila = crearFilaProducto(p);
             contenedorProductos.getChildren().add(fila);
-            
+
             temp.agregar(p);
             carrito.quitar();
         }
-        
+
         while (!temp.colaVacia()) {
             carrito.agregar(temp.valorFrente());
             temp.quitar();
         }
-        
+
         double total = subtotal + COSTO_ENVIO;
-        
+
         lblSubtotal.setText("$" + subtotal);
         lblEnvio.setText("$" + COSTO_ENVIO);
         lblTotal.setText("$" + total);
     }
-    
+
     private HBox crearFilaProducto(Producto p) {
         HBox fila = new HBox(10);
         fila.setAlignment(Pos.CENTER_LEFT);
         fila.setStyle("-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 10;");
-        
+
         Label lblInfo = new Label(p.getNombre());
         lblInfo.setPrefWidth(280);
-        
+
         Label lblPrecio = new Label("$" + p.getPrecio());
         lblPrecio.setPrefWidth(100);
-        
+
         HBox cantidadControl = new HBox(5);
         Button btnMenos = new Button("-");
         Label lblCantidad = new Label(String.valueOf(p.getCantidad()));
         Button btnMas = new Button("+");
         cantidadControl.getChildren().addAll(btnMenos, lblCantidad, btnMas);
         cantidadControl.setPrefWidth(120);
-        
+
         double subtotal = p.getPrecio() * p.getCantidad();
         Label lblSubtotalProducto = new Label("$" + subtotal);
         lblSubtotalProducto.setPrefWidth(120);
-        
+
         Button btnEliminar = new Button("X");
-        
+
         int id = p.getId();
         btnMenos.setOnAction(e -> {
             carrito.disminuirCantidad(id);
@@ -124,9 +124,9 @@ public class CarritoController implements Initializable {
             carrito.eliminarProducto(id);
             actualizarVista();
         });
-        
+
         fila.getChildren().addAll(lblInfo, lblPrecio, cantidadControl, lblSubtotalProducto, btnEliminar);
-        
+
         return fila;
     }
 
@@ -135,17 +135,17 @@ public class CarritoController implements Initializable {
             lblMensaje.setText("El carrito esta vacio");
             return;
         }
-        
+
         // Preparar lista de productos desde el carrito
         List<Producto> productosComprados = new ArrayList<>();
         while (!carrito.colaVacia()) {
             productosComprados.add(carrito.valorFrente());
             carrito.quitar();
         }
-        
+
         // Guardar compra
         guardarCompra(productosComprados);
-        
+
         double total = carrito.calcularTotal() + COSTO_ENVIO;
         lblMensaje.setText("Compra realizada con exito! Total: $" + total);
         actualizarVista();
@@ -172,14 +172,15 @@ public class CarritoController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     private void cargarUltimoId() {
         try {
             File archivo = new File(ARCHIVO_COMPRAS);
             if (archivo.exists()) {
                 Gson gson = new Gson();
                 FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-                Type tipoLista = new TypeToken<List<Compra>>() {}.getType();
+                Type tipoLista = new TypeToken<List<Compra>>() {
+                }.getType();
                 List<Compra> compras = gson.fromJson(reader, tipoLista);
                 reader.close();
                 if (compras != null && !compras.isEmpty()) {
@@ -190,7 +191,7 @@ public class CarritoController implements Initializable {
             ultimoId = 0;
         }
     }
-    
+
     private void guardarCompra(List<Producto> productos) {
         try {
             double total = 0;
@@ -206,10 +207,13 @@ public class CarritoController implements Initializable {
             if (archivo.exists()) {
                 try {
                     FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-                    Type tipoLista = new TypeToken<List<Compra>>() {}.getType();
+                    Type tipoLista = new TypeToken<List<Compra>>() {
+                    }.getType();
                     compras = gson.fromJson(reader, tipoLista);
                     reader.close();
-                    if (compras == null) compras = new ArrayList<>();
+                    if (compras == null) {
+                        compras = new ArrayList<>();
+                    }
                     if (!compras.isEmpty()) {
                         ultimoId = compras.get(compras.size() - 1).getId();
                     }
@@ -219,20 +223,20 @@ public class CarritoController implements Initializable {
             }
 
             ultimoId++;
-            
+
             // Obtener el nombre del cliente logueado
             String nombreCliente = "Cliente";
             if (LoginController.getUsuarioActual() != null) {
                 nombreCliente = LoginController.getUsuarioActual().getNombre();
             }
-            
+
             Compra nuevaCompra = new Compra(ultimoId, total, productos, nombreCliente);
             compras.add(nuevaCompra);
 
             FileWriter writer = new FileWriter(ARCHIVO_COMPRAS);
             gson.toJson(compras, writer);
             writer.close();
-            
+
             System.out.println("Compra guardada con ID: " + ultimoId + " Cliente: " + nombreCliente);
 
         } catch (Exception e) {

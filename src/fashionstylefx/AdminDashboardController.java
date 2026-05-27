@@ -22,13 +22,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 /**
  * FXML Controller class
  *
  * @author pc
  */
-
 public class AdminDashboardController implements Initializable {
 
     @FXML
@@ -69,15 +67,16 @@ public class AdminDashboardController implements Initializable {
         cargarTablaPedidos();
         btnCerrarSesion.setOnAction(event -> cerrarSesion());
     }
-    
+
     private void cargarTablaPedidos() {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipo = new TypeToken<List<Compra>>(){}.getType();
+            Type tipo = new TypeToken<List<Compra>>() {
+            }.getType();
             List<Compra> compras = gson.fromJson(reader, tipo);
             reader.close();
-            
+
             if (compras != null && !compras.isEmpty()) {
                 colId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
@@ -85,14 +84,14 @@ public class AdminDashboardController implements Initializable {
                 // Para cliente y estado necesitas datos adicionales
                 colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
                 colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-                
+
                 tablaPedidos.getItems().setAll(compras);
             }
         } catch (Exception e) {
             System.out.println("Error al cargar pedidos: " + e.getMessage());
         }
     }
-    
+
     private void cargarGraficoVentas() {
         try {
             XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -102,47 +101,50 @@ public class AdminDashboardController implements Initializable {
             series.getData().add(new XYChart.Data<>("Marzo", 180000));
             series.getData().add(new XYChart.Data<>("Abril", 250000));
             series.getData().add(new XYChart.Data<>("Mayo", 300000));
-            
+
             graficoVentas.getData().clear();
             graficoVentas.getData().add(series);
         } catch (Exception e) {
             System.out.println("Error al cargar gráfico: " + e.getMessage());
         }
     }
-    
+
     private void cargarEstadisticas() {
         // Productos
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_PRODUCTOS);
-            Type tipo = new TypeToken<List<Producto>>(){}.getType();
+            Type tipo = new TypeToken<List<Producto>>() {
+            }.getType();
             List<Producto> productos = gson.fromJson(reader, tipo);
             reader.close();
             lblTotalProductos.setText(String.valueOf(productos.size()));
         } catch (Exception e) {
             lblTotalProductos.setText("0");
         }
-        
+
         // Usuarios
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_USUARIOS);
-            Type tipo = new TypeToken<List<Usuario>>(){}.getType();
+            Type tipo = new TypeToken<List<Usuario>>() {
+            }.getType();
             List<Usuario> usuarios = gson.fromJson(reader, tipo);
             reader.close();
             lblTotalUsuarios.setText(String.valueOf(usuarios.size()));
         } catch (Exception e) {
             lblTotalUsuarios.setText("0");
         }
-        
+
         // Pedidos y Ventas
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipo = new TypeToken<List<Compra>>(){}.getType();
+            Type tipo = new TypeToken<List<Compra>>() {
+            }.getType();
             List<Compra> compras = gson.fromJson(reader, tipo);
             reader.close();
-            
+
             if (compras != null && !compras.isEmpty()) {
                 lblTotalPedidos.setText(String.valueOf(compras.size()));
                 double total = 0;
@@ -159,7 +161,7 @@ public class AdminDashboardController implements Initializable {
             lblTotalVentas.setText("\\$0");
         }
     }
-    
+
     private void cerrarSesion() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Login.fxml"));

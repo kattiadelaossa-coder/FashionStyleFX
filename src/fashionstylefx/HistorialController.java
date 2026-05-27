@@ -24,8 +24,6 @@ import java.util.ResourceBundle;
  *
  * @author pc
  */
-
-
 public class HistorialController implements Initializable {
 
     @FXML
@@ -45,11 +43,12 @@ public class HistorialController implements Initializable {
 
     private void cargarHistorial() {
         contenedorHistorial.getChildren().clear();
-        
+
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipoLista = new TypeToken<List<Compra>>() {}.getType();
+            Type tipoLista = new TypeToken<List<Compra>>() {
+            }.getType();
             List<Compra> compras = gson.fromJson(reader, tipoLista);
             reader.close();
 
@@ -62,7 +61,7 @@ public class HistorialController implements Initializable {
                 VBox tarjeta = crearTarjetaCompra(c);
                 contenedorHistorial.getChildren().add(tarjeta);
             }
-            
+
             lblMensaje.setText("Total de compras: " + compras.size());
 
         } catch (Exception e) {
@@ -74,70 +73,76 @@ public class HistorialController implements Initializable {
     private VBox crearTarjetaCompra(Compra compra) {
         VBox tarjeta = new VBox(10);
         tarjeta.setStyle("-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);");
-        
+
         // Header de la tarjeta: Pedido #ID y Estado
         HBox header = new HBox(20);
         header.setAlignment(Pos.CENTER_LEFT);
-        
+
         Label lblId = new Label("Pedido #" + compra.getId());
         lblId.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
-        
+
         Label lblEstado = new Label(compra.getEstado() != null ? compra.getEstado() : "Completado");
         String colorEstado = obtenerColorEstado(compra.getEstado());
         lblEstado.setStyle("-fx-background-color: " + colorEstado + "; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-size: 12px;");
-        
+
         header.getChildren().addAll(lblId, lblEstado);
-        
+
         // Fecha y Total
         HBox info = new HBox(30);
         info.setAlignment(Pos.CENTER_LEFT);
-        
+
         Label lblFecha = new Label("📅 " + compra.getFecha());
         lblFecha.setStyle("-fx-text-fill: #666666; -fx-font-size: 12px;");
-        
+
         Label lblTotal = new Label("💰 Total: $" + compra.getTotal());
         lblTotal.setStyle("-fx-text-fill: #1E88E5; -fx-font-size: 14px; -fx-font-weight: bold;");
-        
+
         info.getChildren().addAll(lblFecha, lblTotal);
-        
+
         // Cliente
         Label lblCliente = new Label("👤 Cliente: " + (compra.getCliente() != null ? compra.getCliente() : "Cliente"));
         lblCliente.setStyle("-fx-text-fill: #666666; -fx-font-size: 12px;");
-        
+
         // Productos
         Label lblProductos = new Label("📦 Productos: " + compra.getResumenProductos());
         lblProductos.setStyle("-fx-text-fill: #666666; -fx-font-size: 12px; -fx-wrap-text: true;");
         lblProductos.setMaxWidth(800);
-        
+
         // Botones
         HBox botones = new HBox(15);
         botones.setAlignment(Pos.CENTER_LEFT);
-        
+
         Button btnDetalles = new Button("Ver detalles");
         btnDetalles.setStyle("-fx-background-color: transparent; -fx-border-color: #1E88E5; -fx-border-radius: 8; -fx-text-fill: #1E88E5; -fx-padding: 6 15;");
         btnDetalles.setOnAction(e -> verDetalles(compra));
-        
+
         Button btnComprarNuevo = new Button("Comprar de nuevo");
         btnComprarNuevo.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 6 15; -fx-cursor: hand;");
         btnComprarNuevo.setOnAction(e -> comprarDeNuevo(compra));
-        
+
         botones.getChildren().addAll(btnDetalles, btnComprarNuevo);
-        
+
         tarjeta.getChildren().addAll(header, info, lblCliente, lblProductos, botones);
-        
+
         return tarjeta;
     }
-    
+
     private String obtenerColorEstado(String estado) {
-        if (estado == null) return "#4CAF50";
+        if (estado == null) {
+            return "#4CAF50";
+        }
         switch (estado) {
-            case "Entregado": return "#4CAF50";
-            case "En camino": return "#FF9800";
-            case "Procesando": return "#2196F3";
-            default: return "#4CAF50";
+            case "Entregado":
+                return "#4CAF50";
+            case "En camino":
+                return "#FF9800";
+            case "Procesando":
+                return "#2196F3";
+            default:
+                return "#4CAF50";
         }
     }
-    
+
     private void verDetalles(Compra compra) {
         // Mostrar ventana con detalles
         StringBuilder sb = new StringBuilder();
@@ -147,45 +152,45 @@ public class HistorialController implements Initializable {
         sb.append("Estado: ").append(compra.getEstado()).append("\n");
         sb.append("Total: $").append(compra.getTotal()).append("\n\n");
         sb.append("Productos:\n");
-        
+
         if (compra.getProductos() != null) {
             for (Producto p : compra.getProductos()) {
                 sb.append("  - ").append(p.getNombre())
-                  .append(" x").append(p.getCantidad())
-                  .append(" = $").append(p.getPrecio() * p.getCantidad()).append("\n");
+                        .append(" x").append(p.getCantidad())
+                        .append(" = $").append(p.getPrecio() * p.getCantidad()).append("\n");
             }
         }
-        
+
         javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(sb.toString());
         textArea.setEditable(false);
         textArea.setPrefHeight(300);
         textArea.setPrefWidth(400);
-        
+
         javafx.scene.control.Dialog<Void> dialog = new javafx.scene.control.Dialog<>();
         dialog.setTitle("Detalles del pedido");
         dialog.getDialogPane().setContent(textArea);
         dialog.getDialogPane().getButtonTypes().add(javafx.scene.control.ButtonType.OK);
         dialog.showAndWait();
     }
-    
+
     private void comprarDeNuevo(Compra compra) {
-    if (compra.getProductos() != null) {
-        ColaCarrito carrito = CatalogoController.getCarrito();
-        
-        for (Producto p : compra.getProductos()) {
-            if (carrito.existeProducto(p.getId())) {
-                carrito.aumentarCantidad(p.getId(), p.getCantidad());
-            } else {
-                Producto nuevo = new Producto(p.getId(), p.getNombre(), p.getPrecio(), p.getCategoria(), p.getImagen());
-                nuevo.setCantidad(p.getCantidad());
-                carrito.agregar(nuevo);
+        if (compra.getProductos() != null) {
+            ColaCarrito carrito = CatalogoController.getCarrito();
+
+            for (Producto p : compra.getProductos()) {
+                if (carrito.existeProducto(p.getId())) {
+                    carrito.aumentarCantidad(p.getId(), p.getCantidad());
+                } else {
+                    Producto nuevo = new Producto(p.getId(), p.getNombre(), p.getPrecio(), p.getCategoria(), p.getImagen());
+                    nuevo.setCantidad(p.getCantidad());
+                    carrito.agregar(nuevo);
+                }
             }
+            lblMensaje.setText("Productos agregados al carrito");
+            abrirCarrito();
         }
-        lblMensaje.setText("Productos agregados al carrito");
-        abrirCarrito();
     }
-}
-    
+
     private void abrirCarrito() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Carrito.fxml"));

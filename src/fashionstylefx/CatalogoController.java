@@ -209,58 +209,59 @@ public class CatalogoController implements Initializable {
         }
     }
 
-   private VBox crearTarjetaProducto(Producto producto) {
-    VBox tarjeta = new VBox(8);
-    tarjeta.setStyle("-fx-padding: 12; -fx-border-color: #E0E0E0; -fx-border-radius: 12; -fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);");
-    tarjeta.setPrefWidth(200);
-    tarjeta.setAlignment(javafx.geometry.Pos.CENTER);
+    private VBox crearTarjetaProducto(Producto producto) {
+        VBox tarjeta = new VBox(8);
+        tarjeta.setStyle("-fx-padding: 12; -fx-border-color: #E0E0E0; -fx-border-radius: 12; -fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);");
+        tarjeta.setPrefWidth(200);
+        tarjeta.setAlignment(javafx.geometry.Pos.CENTER);
 
-    // ========== AGREGAR IMAGEN ==========
-    ImageView imagen = new ImageView();
-    try {
-        // Cargar la imagen desde la carpeta imagenes
-        String rutaImagen = "imagenes/" + producto.getImagen();
-        InputStream inputStream = getClass().getResourceAsStream(rutaImagen);
-        if (inputStream != null) {
-            Image img = new Image(inputStream);
-            imagen.setImage(img);
-            imagen.setFitWidth(180);
-            imagen.setFitHeight(180);
-            imagen.setPreserveRatio(true);
-        } else {
-            // Si no encuentra la imagen, mostrar un placeholder
+        // ========== AGREGAR IMAGEN ==========
+        ImageView imagen = new ImageView();
+        try {
+            // Cargar la imagen desde la carpeta imagenes
+            String rutaImagen = "imagenes/" + producto.getImagen();
+            InputStream inputStream = getClass().getResourceAsStream(rutaImagen);
+            if (inputStream != null) {
+                Image img = new Image(inputStream);
+                imagen.setImage(img);
+                imagen.setFitWidth(180);
+                imagen.setFitHeight(180);
+                imagen.setPreserveRatio(true);
+            } else {
+                // Si no encuentra la imagen, mostrar un placeholder
+                imagen.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 8;");
+                imagen.setFitWidth(180);
+                imagen.setFitHeight(180);
+            }
+        } catch (Exception e) {
+            // Si hay error, mostrar placeholder
             imagen.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 8;");
             imagen.setFitWidth(180);
             imagen.setFitHeight(180);
         }
-    } catch (Exception e) {
-        // Si hay error, mostrar placeholder
-        imagen.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: #E0E0E0; -fx-border-radius: 8;");
-        imagen.setFitWidth(180);
-        imagen.setFitHeight(180);
+        // ===================================
+
+        Label lblNombre = new Label(producto.getNombre());
+        lblNombre.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-wrap-text: true;");
+        lblNombre.setPrefWidth(180);
+        lblNombre.setAlignment(javafx.geometry.Pos.CENTER);
+
+        Label lblPrecio = new Label("$" + producto.getPrecio());
+        lblPrecio.setStyle("-fx-text-fill: #1E88E5; -fx-font-size: 16px; -fx-font-weight: bold;");
+
+        Label lblCategoria = new Label(producto.getCategoria());
+        lblCategoria.setStyle("-fx-text-fill: #666666; -fx-font-size: 11px;");
+
+        Button btnAgregar = new Button("🛒 Agregar");
+        btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+        btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
+
+        // Agregar la imagen primero, luego el resto
+        tarjeta.getChildren().addAll(imagen, lblNombre, lblPrecio, lblCategoria, btnAgregar);
+
+        return tarjeta;
     }
-    // ===================================
 
-    Label lblNombre = new Label(producto.getNombre());
-    lblNombre.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-wrap-text: true;");
-    lblNombre.setPrefWidth(180);
-    lblNombre.setAlignment(javafx.geometry.Pos.CENTER);
-
-    Label lblPrecio = new Label("$" + producto.getPrecio());
-    lblPrecio.setStyle("-fx-text-fill: #1E88E5; -fx-font-size: 16px; -fx-font-weight: bold;");
-
-    Label lblCategoria = new Label(producto.getCategoria());
-    lblCategoria.setStyle("-fx-text-fill: #666666; -fx-font-size: 11px;");
-
-    Button btnAgregar = new Button("🛒 Agregar");
-    btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
-    btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
-
-    // Agregar la imagen primero, luego el resto
-    tarjeta.getChildren().addAll(imagen, lblNombre, lblPrecio, lblCategoria, btnAgregar);
-
-    return tarjeta;
-}
     private void agregarAlCarrito(Producto producto) {
         boolean encontrado = false;
         ColaCarrito temp = new ColaCarrito();
@@ -295,40 +296,49 @@ public class CatalogoController implements Initializable {
     }
 
     private void abrirPerfil() {
-    try {
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Perfil.fxml"));
-        javafx.scene.Parent root = loader.load();
-        Stage stage = new Stage();
-        stage.setTitle("FashionStyle - Mi Perfil");
-        stage.setScene(new javafx.scene.Scene(root));
-        stage.show();
-    } catch (Exception e) {
-        e.printStackTrace();
-        lblMensaje.setText("Error al abrir perfil");
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Perfil.fxml"));
+            javafx.scene.Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("FashionStyle - Mi Perfil");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir perfil");
+        }
     }
-}
 
     private void abrirListaDeseos() {
-        lblMensaje.setText("Pantalla de lista de deseos en desarrollo");
-    }
-
-    private void abrirCarrito() {
     try {
-        // Método más seguro para cargar el FXML
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
-        loader.setLocation(getClass().getResource("Carrito.fxml"));
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
         javafx.scene.Parent root = loader.load();
-        
         javafx.stage.Stage stage = new javafx.stage.Stage();
-        stage.setTitle("FashionStyle - Carrito");
+        stage.setTitle("FashionStyle - Lista de Deseos");
         stage.setScene(new javafx.scene.Scene(root));
         stage.show();
-        
     } catch (Exception e) {
         e.printStackTrace();
-        lblMensaje.setText("Error al abrir carrito: " + e.getMessage());
+        lblMensaje.setText("Error al abrir lista de deseos");
     }
 }
+    private void abrirCarrito() {
+        try {
+            // Método más seguro para cargar el FXML
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
+            loader.setLocation(getClass().getResource("Carrito.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("FashionStyle - Carrito");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir carrito: " + e.getMessage());
+        }
+    }
 
     private void handleCerrarSesion() {
         btnCerrarSesion.getScene().getWindow().hide();
@@ -347,18 +357,18 @@ public class CatalogoController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     private void abrirHistorial() {
-    try {
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Historial.fxml"));
-        javafx.scene.Parent root = loader.load();
-        javafx.stage.Stage stage = new javafx.stage.Stage();
-        stage.setTitle("FashionStyle - Mis Compras");
-        stage.setScene(new javafx.scene.Scene(root));
-        stage.show();
-    } catch (Exception e) {
-        e.printStackTrace();
-        lblMensaje.setText("Error al abrir historial");
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Historial.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("FashionStyle - Mis Compras");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir historial");
+        }
     }
-}
 }
