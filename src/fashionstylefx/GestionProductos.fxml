@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" styleClass="fondo-catalogo" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.GestionProductosController">
+    <children>
+        <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <children>
+                <!-- Título -->
+                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="Gestión de Productos" />
+                
+                <!-- Formulario -->
+                <HBox spacing="20.0">
+                    <children>
+                        <TextField fx:id="txtId" promptText="ID" prefWidth="80" editable="false" />
+                        <TextField fx:id="txtNombre" promptText="Nombre" prefWidth="200" />
+                        <TextField fx:id="txtPrecio" promptText="Precio" prefWidth="100" />
+                        <TextField fx:id="txtCategoria" promptText="Categoría" prefWidth="120" />
+                        <TextField fx:id="txtImagen" promptText="Imagen (nombre.png)" prefWidth="150" />
+                        <Button fx:id="btnAgregar" text="Agregar" styleClass="boton-primario" />
+                        <Button fx:id="btnActualizar" text="Actualizar" styleClass="boton-primario" />
+                        <Button fx:id="btnLimpiar" text="Limpiar" />
+                    </children>
+                </HBox>
+                
+                <!-- Tabla de productos -->
+                <TableView fx:id="tablaProductos" prefHeight="500.0">
+                    <columns>
+                        <TableColumn fx:id="colId" prefWidth="50" text="ID" />
+                        <TableColumn fx:id="colNombre" prefWidth="250" text="Nombre" />
+                        <TableColumn fx:id="colPrecio" prefWidth="100" text="Precio" />
+                        <TableColumn fx:id="colCategoria" prefWidth="120" text="Categoría" />
+                        <TableColumn fx:id="colImagen" prefWidth="150" text="Imagen" />
+                        <TableColumn fx:id="colAcciones" prefWidth="150" text="Acciones" />
+                    </columns>
+                </TableView>
+                
+                <Button fx:id="btnVolver" text="← Volver" styleClass="boton-enlace" />
+                <Label fx:id="lblMensaje" style="-fx-text-fill: red;" text="" />
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

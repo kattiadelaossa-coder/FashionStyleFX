@@ -6,8 +6,10 @@ package fashionstylefx;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.File;
 import javafx.scene.image.Image;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -256,8 +258,12 @@ public class CatalogoController implements Initializable {
         btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
         btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
 
+        // Botón de corazón para agregar a lista de deseos
+        Button btnDeseo = new Button("❤️");
+        btnDeseo.setStyle("-fx-background-color: transparent; -fx-text-fill: #E53935; -fx-cursor: hand;");
+        btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
         // Agregar la imagen primero, luego el resto
-        tarjeta.getChildren().addAll(imagen, lblNombre, lblPrecio, lblCategoria, btnAgregar);
+        tarjeta.getChildren().addAll(imagen, lblNombre, lblPrecio, lblCategoria, btnAgregar, btnDeseo);
 
         return tarjeta;
     }
@@ -310,18 +316,19 @@ public class CatalogoController implements Initializable {
     }
 
     private void abrirListaDeseos() {
-    try {
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
-        javafx.scene.Parent root = loader.load();
-        javafx.stage.Stage stage = new javafx.stage.Stage();
-        stage.setTitle("FashionStyle - Lista de Deseos");
-        stage.setScene(new javafx.scene.Scene(root));
-        stage.show();
-    } catch (Exception e) {
-        e.printStackTrace();
-        lblMensaje.setText("Error al abrir lista de deseos");
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("FashionStyle - Lista de Deseos");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir lista de deseos");
+        }
     }
-}
+
     private void abrirCarrito() {
         try {
             // Método más seguro para cargar el FXML
@@ -369,6 +376,51 @@ public class CatalogoController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             lblMensaje.setText("Error al abrir historial");
+        }
+    }
+
+    private void agregarAListaDeseos(Producto producto) {
+        try {
+            // 1. Leer los deseos que ya están guardados
+            Gson gson = new Gson();
+            List<Producto> deseos = new ArrayList<>();
+            File archivo = new File("src/fashionstylefx/deseos.json");
+
+            if (archivo.exists()) {
+                FileReader reader = new FileReader("src/fashionstylefx/deseos.json");
+                Type tipoLista = new TypeToken<List<Producto>>() {
+                }.getType();
+                deseos = gson.fromJson(reader, tipoLista);
+                reader.close();
+                if (deseos == null) {
+                    deseos = new ArrayList<>();
+                }
+            }
+
+            // 2. Verificar si el producto ya está en la lista de deseos
+            for (Producto p : deseos) {
+                if (p.getId() == producto.getId()) {
+                    lblMensaje.setText("El producto ya está en tu lista de deseos");
+                    return;
+                }
+            }
+
+            // 3. Agregar el nuevo producto
+            Producto nuevo = new Producto(producto.getId(), producto.getNombre(),
+                    producto.getPrecio(), producto.getCategoria(),
+                    producto.getImagen());
+            deseos.add(nuevo);
+
+            // 4. Guardar en el archivo JSON
+            FileWriter writer = new FileWriter("src/fashionstylefx/deseos.json");
+            gson.toJson(deseos, writer);
+            writer.close();
+
+            lblMensaje.setText("✓ " + producto.getNombre() + " agregado a lista de deseos");
+
+        } catch (Exception e) {
+            lblMensaje.setText("Error al agregar a lista de deseos");
+            e.printStackTrace();
         }
     }
 }

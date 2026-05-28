@@ -6,7 +6,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.chart.BarChart?>
@@ -31,30 +30,37 @@
                 <!-- Tarjetas de estadísticas -->
                 <HBox spacing="20.0" alignment="CENTER">
                     <children>
+                        <!-- Tarjeta Productos -->
                         <VBox spacing="10.0" alignment="CENTER" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);">
                             <children>
                                 <Label style="-fx-font-size: 40px;" text="📦" />
                                 <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="Productos" />
                                 <Label fx:id="lblTotalProductos" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="0" />
+                                <Button fx:id="btnGestionarProductos" style="-fx-background-color: transparent; -fx-text-fill: #1E88E5;" text="Gestionar" />
                             </children>
                         </VBox>
                         
+                        <!-- Tarjeta Usuarios -->
                         <VBox spacing="10.0" alignment="CENTER" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);">
                             <children>
                                 <Label style="-fx-font-size: 40px;" text="👥" />
                                 <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="Usuarios" />
                                 <Label fx:id="lblTotalUsuarios" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="0" />
+                                <Button fx:id="btnGestionarUsuarios" style="-fx-background-color: transparent; -fx-text-fill: #1E88E5;" text="Gestionar" />
                             </children>
                         </VBox>
                         
+                        <!-- Tarjeta Pedidos -->
                         <VBox spacing="10.0" alignment="CENTER" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);">
                             <children>
                                 <Label style="-fx-font-size: 40px;" text="🛒" />
                                 <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="Pedidos" />
                                 <Label fx:id="lblTotalPedidos" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="0" />
+                                <Button fx:id="btnGestionarPedidos" style="-fx-background-color: transparent; -fx-text-fill: #1E88E5;" text="Gestionar" />
                             </children>
                         </VBox>
                         
+                        <!-- Tarjeta Ventas -->
                         <VBox spacing="10.0" alignment="CENTER" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);">
                             <children>
                                 <Label style="-fx-font-size: 40px;" text="💰" />

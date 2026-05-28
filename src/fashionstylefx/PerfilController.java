@@ -66,7 +66,17 @@ public class PerfilController implements Initializable {
     }
 
     private void editarPerfil() {
-        lblMensaje.setText("Función de edición en desarrollo");
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("EditarPerfil.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("FashionStyle - Editar Perfil");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.showAndWait();  // Espera a que se cierre para actualizar
+            cargarUsuarioActual(); // Recargar datos después de editar
+        } catch (Exception e) {
+            lblMensaje.setText("Error al abrir editar perfil");
+        }
     }
 
     private void cerrarSesion() {

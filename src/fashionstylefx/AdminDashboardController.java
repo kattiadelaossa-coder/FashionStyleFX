@@ -22,11 +22,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-/**
- * FXML Controller class
- *
- * @author pc
- */
 public class AdminDashboardController implements Initializable {
 
     @FXML
@@ -55,6 +50,14 @@ public class AdminDashboardController implements Initializable {
     private TableColumn<Compra, Double> colTotal;
     @FXML
     private TableColumn<Compra, String> colEstado;
+    
+    // Botones de gestión
+    @FXML
+    private Button btnGestionarProductos;
+    @FXML
+    private Button btnGestionarUsuarios;
+    @FXML
+    private Button btnGestionarPedidos;
 
     private final String ARCHIVO_PRODUCTOS = "src/fashionstylefx/productos.json";
     private final String ARCHIVO_USUARIOS = "src/fashionstylefx/usuarios.json";
@@ -66,14 +69,18 @@ public class AdminDashboardController implements Initializable {
         cargarGraficoVentas();
         cargarTablaPedidos();
         btnCerrarSesion.setOnAction(event -> cerrarSesion());
+        
+        // Eventos de los botones de gestión
+        btnGestionarProductos.setOnAction(event -> abrirGestionProductos());
+        btnGestionarUsuarios.setOnAction(event -> abrirGestionUsuarios());
+        btnGestionarPedidos.setOnAction(event -> abrirGestionPedidos());
     }
 
     private void cargarTablaPedidos() {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipo = new TypeToken<List<Compra>>() {
-            }.getType();
+            Type tipo = new TypeToken<List<Compra>>() {}.getType();
             List<Compra> compras = gson.fromJson(reader, tipo);
             reader.close();
 
@@ -81,7 +88,6 @@ public class AdminDashboardController implements Initializable {
                 colId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
                 colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-                // Para cliente y estado necesitas datos adicionales
                 colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
                 colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
@@ -114,8 +120,7 @@ public class AdminDashboardController implements Initializable {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_PRODUCTOS);
-            Type tipo = new TypeToken<List<Producto>>() {
-            }.getType();
+            Type tipo = new TypeToken<List<Producto>>() {}.getType();
             List<Producto> productos = gson.fromJson(reader, tipo);
             reader.close();
             lblTotalProductos.setText(String.valueOf(productos.size()));
@@ -127,8 +132,7 @@ public class AdminDashboardController implements Initializable {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_USUARIOS);
-            Type tipo = new TypeToken<List<Usuario>>() {
-            }.getType();
+            Type tipo = new TypeToken<List<Usuario>>() {}.getType();
             List<Usuario> usuarios = gson.fromJson(reader, tipo);
             reader.close();
             lblTotalUsuarios.setText(String.valueOf(usuarios.size()));
@@ -140,8 +144,7 @@ public class AdminDashboardController implements Initializable {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipo = new TypeToken<List<Compra>>() {
-            }.getType();
+            Type tipo = new TypeToken<List<Compra>>() {}.getType();
             List<Compra> compras = gson.fromJson(reader, tipo);
             reader.close();
 
@@ -173,4 +176,42 @@ public class AdminDashboardController implements Initializable {
             lblMensaje.setText("Error al cerrar sesión");
         }
     }
+    
+    private void abrirGestionProductos() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("GestionProductos.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("FashionStyle - Gestionar Productos");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            lblMensaje.setText("Error al abrir gestión de productos");
+        }
+    }
+    
+    private void abrirGestionUsuarios() {
+    try {
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("GestionUsuarios.fxml"));
+        javafx.scene.Parent root = loader.load();
+        javafx.stage.Stage stage = new javafx.stage.Stage();
+        stage.setTitle("FashionStyle - Gestionar Usuarios");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        lblMensaje.setText("Error al abrir gestión de usuarios");
+    }
+}
+    private void abrirGestionPedidos() {
+    try {
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("GestionPedidos.fxml"));
+        javafx.scene.Parent root = loader.load();
+        javafx.stage.Stage stage = new javafx.stage.Stage();
+        stage.setTitle("FashionStyle - Gestionar Pedidos");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        lblMensaje.setText("Error al abrir gestión de pedidos");
+    }
+}
 }
