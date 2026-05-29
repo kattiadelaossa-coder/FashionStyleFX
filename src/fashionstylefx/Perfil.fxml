@@ -55,7 +55,7 @@
                         <HBox spacing="20.0" alignment="CENTER">
                             <children>
                                 <Label fx:id="lblMisCompras" styleClass="enlace" text="📦 Mis Compras" />
-                                <Label fx:id="lblListaDeseos" styleClass="enlace" text="❤️ Lista de Deseos" />
+                                <Label fx:id="lblListaDeseos" styleClass="enlace" text="❤ Lista de Deseos" />
                             </children>
                         </HBox>
                     </children>

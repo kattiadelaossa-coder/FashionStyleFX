@@ -1,30 +1,142 @@
 [
     {
         "id": 1,
-        "nombre": "Camiseta Oversize",
+        "nombre": "Camiseta Oversize Blanca",
         "precio": 49900,
         "categoria": "Hombre",
-        "imagen": "camiseta.png"
+        "imagen": "camisaoversize.png"       
     },
     {
         "id": 2,
-        "nombre": "Hoodie Negra",
+        "nombre": "Hoodie Negra Esencial",
         "precio": 89900,
         "categoria": "Hombre",
-        "imagen": "hoodie.png"
+        "imagen": "hoodie.png"             
     },
     {
         "id": 3,
-        "nombre": "Vestido Verano",
+        "nombre": "Vestido Floral Verano",
         "precio": 59900,
         "categoria": "Mujer",
         "imagen": "vestido.png"
     },
     {
         "id": 4,
-        "nombre": "Jean Skinny",
+        "nombre": "Jean Skinny Azul",
         "precio": 79900,
         "categoria": "Mujer",
         "imagen": "jean.png"
+    },
+    {
+        "id": 5,
+        "nombre": "Short Deportivo Negro",
+        "precio": 39900,
+        "categoria": "Hombre",
+        "imagen": "shortd.png"
+    },
+    {
+        "id": 6,
+        "nombre": "Blusa Elegante",
+        "precio": 49900,
+        "categoria": "Mujer",
+        "imagen": "blusa.png"
+    },
+    {
+        "id": 7,
+        "nombre": "Camisa Manga Larga",
+        "precio": 69900,
+        "categoria": "Hombre",
+        "imagen": "camisam.png"
+    },
+    {
+        "id": 8,
+        "nombre": "Falda Plisada Negra",
+        "precio": 59900,
+        "categoria": "Mujer",
+        "imagen": "falda.png"
+    },
+    {
+        "id": 9,
+        "nombre": "Chaqueta Jeans",
+        "precio": 129900,
+        "categoria": "Hombre",
+        "imagen": "chaqueta.png"
+    },
+    {
+        "id": 10,
+        "nombre": "Short Jeans",
+        "precio": 99900,
+        "categoria": "Mujer",
+        "imagen": "short.png"
+    },
+    {
+        "id": 11,
+        "nombre": "Pantalón Cargo Verde",
+        "precio": 89900,
+        "categoria": "Hombre",
+        "imagen": "pantalonc.png"
+    },
+    {
+        "id": 12,
+        "nombre": "Top Tirantes Rosa",
+        "precio": 29900,
+        "categoria": "Mujer",
+        "imagen": "top.png"
+    },
+    {
+        "id": 13,
+        "nombre": "Chaleco Acolchado",
+        "precio": 109900,
+        "categoria": "Hombre",
+        "imagen": "chaleco.png"
+    },
+    {
+        "id": 14,
+        "nombre": "Vestido Largo Estampado",
+        "precio": 89900,
+        "categoria": "Mujer",
+        "imagen": "vestidol.png"
+    },
+    {
+        "id": 15,
+        "nombre": "Jean Recto Negro",
+        "precio": 74900,
+        "categoria": "Hombre",
+        "imagen": "jeanrecto.png"
+    },
+    {
+        "id": 16,
+        "nombre": "Blusa Seda Azul",
+        "precio": 64900,
+        "categoria": "Mujer",
+        "imagen": "blusas.png"
+    },
+    {
+        "id": 17,
+        "nombre": "Camiseta Básica Negra",
+        "precio": 159900,
+        "categoria": "Hombre",
+        "imagen": "sueternegro.png"
+    },
+    {
+        "id": 18,
+        "nombre": "Saco Manga Larga Crema",
+        "precio": 119900,
+        "categoria": "Mujer",
+        "imagen": "saco.png"
+    },
+    {
+        "id": 19,
+        "nombre": "Pantalón Jogger Gris",
+        "precio": 69900,
+        "categoria": "Hombre",
+        "imagen": "jogger.png"
+    },
+    {
+        "id": 20,
+        "nombre": "Braga Boyfriend",
+        "precio": 34900,
+        "categoria": "Mujer",
+        "imagen": "braga.jpg"
     }
 ]

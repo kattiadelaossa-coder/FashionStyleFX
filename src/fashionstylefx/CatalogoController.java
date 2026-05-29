@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -259,9 +260,10 @@ public class CatalogoController implements Initializable {
         btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
 
         // Botón de corazón para agregar a lista de deseos
-        Button btnDeseo = new Button("❤️");
-        btnDeseo.setStyle("-fx-background-color: transparent; -fx-text-fill: #E53935; -fx-cursor: hand;");
-        btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
+        // Botón de corazón para agregar a lista de deseos
+Button btnDeseo = new Button("❤");
+btnDeseo.setStyle("-fx-background-color: transparent; -fx-text-fill: #E53935; -fx-cursor: hand; -fx-font-size: 16px;");
+btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
         // Agregar la imagen primero, luego el resto
         tarjeta.getChildren().addAll(imagen, lblNombre, lblPrecio, lblCategoria, btnAgregar, btnDeseo);
 
@@ -298,7 +300,8 @@ public class CatalogoController implements Initializable {
             carrito.agregar(nuevo);
         }
 
-        lblMensaje.setText("✓ " + producto.getNombre() + " agregado al carrito");
+        // Mensaje emergente
+        mostrarAlertaExito(producto.getNombre() + " agregado al carrito");
     }
 
     private void abrirPerfil() {
@@ -316,18 +319,17 @@ public class CatalogoController implements Initializable {
     }
 
     private void abrirListaDeseos() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("FashionStyle - Lista de Deseos");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            lblMensaje.setText("Error al abrir lista de deseos");
-        }
+    try {
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
+        javafx.scene.Parent root = loader.load();
+        javafx.stage.Stage stage = new javafx.stage.Stage();
+        stage.setTitle("FashionStyle - Lista de Deseos");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        mostrarAlertaError("Error al abrir lista de deseos");
     }
+}
 
     private void abrirCarrito() {
         try {
@@ -400,7 +402,7 @@ public class CatalogoController implements Initializable {
             // 2. Verificar si el producto ya está en la lista de deseos
             for (Producto p : deseos) {
                 if (p.getId() == producto.getId()) {
-                    lblMensaje.setText("El producto ya está en tu lista de deseos");
+                    mostrarAlertaError("El producto ya está en tu lista de deseos");
                     return;
                 }
             }
@@ -416,11 +418,27 @@ public class CatalogoController implements Initializable {
             gson.toJson(deseos, writer);
             writer.close();
 
-            lblMensaje.setText("✓ " + producto.getNombre() + " agregado a lista de deseos");
+            mostrarAlertaExito(producto.getNombre() + " agregado a lista de deseos");
 
         } catch (Exception e) {
-            lblMensaje.setText("Error al agregar a lista de deseos");
+            mostrarAlertaError("Error al agregar a lista de deseos");
             e.printStackTrace();
         }
+    }
+
+    private void mostrarAlertaExito(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("FashionStyle");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void mostrarAlertaError(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("FashionStyle");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }

@@ -105,7 +105,17 @@ public class PerfilController implements Initializable {
         }
     }
 
-    private void abrirListaDeseos() {
-        lblMensaje.setText("Pantalla de lista de deseos en desarrollo");
+   private void abrirListaDeseos() {
+    try {
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
+        javafx.scene.Parent root = loader.load();
+        javafx.stage.Stage stage = new javafx.stage.Stage();
+        stage.setTitle("FashionStyle - Lista de Deseos");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir lista de deseos");
     }
+}
 }
