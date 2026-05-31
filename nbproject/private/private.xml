@@ -3,11 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/productos.json</file>
             <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/CatalogoController.java</file>
-            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/Catalogo.fxml</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/usuarios.json</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/estilos.css</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/LoginController.java</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/CarritoController.java</file>
             <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/PerfilController.java</file>
-            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/Perfil.fxml</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/AdminDashboardController.java</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/GestionProductosController.java</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/GestionUsuariosController.java</file>
+            <file>file:/C:/Users/pc/Documents/NetBeansProjects/FashionStyleFX/src/fashionstylefx/GestionPedidosController.java</file>
         </group>
     </open-files>
 </project-private>

@@ -19,8 +19,14 @@ import javafx.scene.chart.XYChart;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class AdminDashboardController implements Initializable {
 
@@ -50,7 +56,7 @@ public class AdminDashboardController implements Initializable {
     private TableColumn<Compra, Double> colTotal;
     @FXML
     private TableColumn<Compra, String> colEstado;
-    
+
     // Botones de gestión
     @FXML
     private Button btnGestionarProductos;
@@ -69,7 +75,7 @@ public class AdminDashboardController implements Initializable {
         cargarGraficoVentas();
         cargarTablaPedidos();
         btnCerrarSesion.setOnAction(event -> cerrarSesion());
-        
+
         // Eventos de los botones de gestión
         btnGestionarProductos.setOnAction(event -> abrirGestionProductos());
         btnGestionarUsuarios.setOnAction(event -> abrirGestionUsuarios());
@@ -80,19 +86,33 @@ public class AdminDashboardController implements Initializable {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipo = new TypeToken<List<Compra>>() {}.getType();
-            List<Compra> compras = gson.fromJson(reader, tipo);
+            Type tipoMapa = new TypeToken<Map<String, List<Compra>>>() {
+            }.getType();
+            Map<String, List<Compra>> todasLasCompras = gson.fromJson(reader, tipoMapa);
             reader.close();
 
-            if (compras != null && !compras.isEmpty()) {
-                colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-                colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-                colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
-                colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+            List<Compra> todosLosPedidos = new ArrayList<>();
 
-                tablaPedidos.getItems().setAll(compras);
+            if (todasLasCompras != null) {
+                for (Map.Entry<String, List<Compra>> entry : todasLasCompras.entrySet()) {
+                    List<Compra> comprasUsuario = entry.getValue();
+                    if (comprasUsuario != null) {
+                        todosLosPedidos.addAll(comprasUsuario);
+                    }
+                }
             }
+
+            // Ordenar por ID descendente (más reciente primero)
+            todosLosPedidos.sort((a, b) -> Integer.compare(b.getId(), a.getId()));
+
+            colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
+            colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+            colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+            colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+
+            tablaPedidos.getItems().setAll(todosLosPedidos);
+
         } catch (Exception e) {
             System.out.println("Error al cargar pedidos: " + e.getMessage());
         }
@@ -120,7 +140,8 @@ public class AdminDashboardController implements Initializable {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_PRODUCTOS);
-            Type tipo = new TypeToken<List<Producto>>() {}.getType();
+            Type tipo = new TypeToken<List<Producto>>() {
+            }.getType();
             List<Producto> productos = gson.fromJson(reader, tipo);
             reader.close();
             lblTotalProductos.setText(String.valueOf(productos.size()));
@@ -132,7 +153,8 @@ public class AdminDashboardController implements Initializable {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_USUARIOS);
-            Type tipo = new TypeToken<List<Usuario>>() {}.getType();
+            Type tipo = new TypeToken<List<Usuario>>() {
+            }.getType();
             List<Usuario> usuarios = gson.fromJson(reader, tipo);
             reader.close();
             lblTotalUsuarios.setText(String.valueOf(usuarios.size()));
@@ -140,28 +162,37 @@ public class AdminDashboardController implements Initializable {
             lblTotalUsuarios.setText("0");
         }
 
-        // Pedidos y Ventas
+        // Pedidos y Ventas - LEER DE TODOS LOS USUARIOS (nueva estructura)
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipo = new TypeToken<List<Compra>>() {}.getType();
-            List<Compra> compras = gson.fromJson(reader, tipo);
+            Type tipoMapa = new TypeToken<Map<String, List<Compra>>>() {
+            }.getType();
+            Map<String, List<Compra>> todasLasCompras = gson.fromJson(reader, tipoMapa);
             reader.close();
 
-            if (compras != null && !compras.isEmpty()) {
-                lblTotalPedidos.setText(String.valueOf(compras.size()));
-                double total = 0;
-                for (Compra c : compras) {
-                    total += c.getTotal();
+            int totalPedidos = 0;
+            double totalVentas = 0;
+
+            if (todasLasCompras != null) {
+                for (Map.Entry<String, List<Compra>> entry : todasLasCompras.entrySet()) {
+                    List<Compra> comprasUsuario = entry.getValue();
+                    if (comprasUsuario != null) {
+                        totalPedidos += comprasUsuario.size();
+                        for (Compra c : comprasUsuario) {
+                            totalVentas += c.getTotal();
+                        }
+                    }
                 }
-                lblTotalVentas.setText("\\$" + total);
-            } else {
-                lblTotalPedidos.setText("0");
-                lblTotalVentas.setText("\\$0");
             }
+
+            lblTotalPedidos.setText(String.valueOf(totalPedidos));
+            lblTotalVentas.setText("$" + totalVentas);
+
         } catch (Exception e) {
             lblTotalPedidos.setText("0");
-            lblTotalVentas.setText("\\$0");
+            lblTotalVentas.setText("$0");
+            System.out.println("Error al cargar compras: " + e.getMessage());
         }
     }
 
@@ -176,42 +207,57 @@ public class AdminDashboardController implements Initializable {
             lblMensaje.setText("Error al cerrar sesión");
         }
     }
-    
-    private void abrirGestionProductos() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("GestionProductos.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("FashionStyle - Gestionar Productos");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            lblMensaje.setText("Error al abrir gestión de productos");
-        }
-    }
-    
-    private void abrirGestionUsuarios() {
+
+   private void abrirGestionProductos() {
     try {
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("GestionUsuarios.fxml"));
-        javafx.scene.Parent root = loader.load();
-        javafx.stage.Stage stage = new javafx.stage.Stage();
-        stage.setTitle("FashionStyle - Gestionar Usuarios");
-        stage.setScene(new javafx.scene.Scene(root));
+        Stage stageActual = (Stage) btnGestionarProductos.getScene().getWindow();
+        stageActual.close();
+        
+        Parent root = FXMLLoader.load(getClass().getResource("GestionProductos.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Gestionar Productos");
+        stage.setScene(new Scene(root));
         stage.show();
     } catch (Exception e) {
-        lblMensaje.setText("Error al abrir gestión de usuarios");
+        lblMensaje.setText("Error al abrir gestión de productos");
     }
 }
+
+    private void abrirGestionUsuarios() {
+    try {
+        // Cerrar Admin Dashboard
+        Stage stageActual = (Stage) btnGestionarUsuarios.getScene().getWindow();
+        stageActual.close();
+        
+        // Abrir Gestión de Usuarios
+        Parent root = FXMLLoader.load(getClass().getResource("GestionUsuarios.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Gestionar Usuarios");
+        stage.setScene(new Scene(root));
+        stage.show();
+        
+    } catch (Exception e) {
+        lblMensaje.setText("Error al abrir gestión de usuarios");
+        e.printStackTrace();
+    }
+}
+
     private void abrirGestionPedidos() {
     try {
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("GestionPedidos.fxml"));
-        javafx.scene.Parent root = loader.load();
-        javafx.stage.Stage stage = new javafx.stage.Stage();
+        // Cerrar Admin Dashboard
+        Stage stageActual = (Stage) btnGestionarPedidos.getScene().getWindow();
+        stageActual.close();
+        
+        // Abrir Gestión de Pedidos
+        Parent root = FXMLLoader.load(getClass().getResource("GestionPedidos.fxml"));
+        Stage stage = new Stage();
         stage.setTitle("FashionStyle - Gestionar Pedidos");
-        stage.setScene(new javafx.scene.Scene(root));
+        stage.setScene(new Scene(root));
         stage.show();
+        
     } catch (Exception e) {
         lblMensaje.setText("Error al abrir gestión de pedidos");
+        e.printStackTrace();
     }
 }
 }

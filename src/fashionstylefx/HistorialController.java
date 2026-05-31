@@ -17,7 +17,9 @@ import javafx.scene.layout.VBox;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -45,12 +47,13 @@ public class HistorialController implements Initializable {
         contenedorHistorial.getChildren().clear();
 
         try {
-            Gson gson = new Gson();
-            FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipoLista = new TypeToken<List<Compra>>() {
-            }.getType();
-            List<Compra> compras = gson.fromJson(reader, tipoLista);
-            reader.close();
+            String email = LoginController.getUsuarioActual().getCorreo();
+            System.out.println("Cargando historial para: " + email);
+
+            // Usar DataStorage para cargar compras del usuario actual
+            List<Compra> compras = DataStorage.cargarCompras(email);
+
+            System.out.println("Compras encontradas: " + compras.size());
 
             if (compras == null || compras.isEmpty()) {
                 lblMensaje.setText("No hay compras registradas");

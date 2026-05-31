@@ -7,13 +7,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Author     : pc
 */
 /* Fondo principal con imagen */
-.root {
+/* Fondo solo para Login y Registro */
+.fondo-login {
     -fx-background-image: url('imagenes/pexels-minasenishino-29210804.jpg');
     -fx-background-size: cover;
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
 }
 
+/* Fondos para las demás pantallas */
+.fondo-gris {
+    -fx-background-color: #F5F5F5;
+}
+
+.fondo-pantalla {
+    -fx-background-color: #BBDEFB;
+}
 /* Tarjeta blanca con sombra */
 .tarjeta {
     -fx-background-color: rgba(255,255,255,0.95);

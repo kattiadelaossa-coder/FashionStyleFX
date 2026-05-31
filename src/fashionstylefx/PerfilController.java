@@ -11,6 +11,9 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 public class PerfilController implements Initializable {
 
@@ -81,11 +84,28 @@ public class PerfilController implements Initializable {
 
     private void cerrarSesion() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Login.fxml"));
-            javafx.scene.Parent root = loader.load();
-            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
-            stage.setScene(new javafx.scene.Scene(root));
+            // Cerrar ventana de Perfil
+            Stage stagePerfil = (Stage) btnCerrarSesion.getScene().getWindow();
+            stagePerfil.close();
+
+            // Buscar y cerrar la ventana del Catálogo
+            for (javafx.stage.Window window : javafx.stage.Window.getWindows()) {
+                if (window instanceof Stage) {
+                    Stage stage = (Stage) window;
+                    if (stage.getTitle() != null && stage.getTitle().equals("FashionStyle - Catálogo")) {
+                        stage.close();
+                        break;
+                    }
+                }
+            }
+
+            // Abrir Login
+            Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Stage stage = new Stage();
             stage.setTitle("FashionStyle - Login");
+            stage.setScene(new Scene(root));
+            stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
             lblMensaje.setText("Error al cerrar sesión");
@@ -105,17 +125,18 @@ public class PerfilController implements Initializable {
         }
     }
 
-   private void abrirListaDeseos() {
-    try {
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
-        javafx.scene.Parent root = loader.load();
-        javafx.stage.Stage stage = new javafx.stage.Stage();
-        stage.setTitle("FashionStyle - Lista de Deseos");
-        stage.setScene(new javafx.scene.Scene(root));
-        stage.show();
-    } catch (Exception e) {
-        e.printStackTrace();
-        lblMensaje.setText("Error al abrir lista de deseos");
+    private void abrirListaDeseos() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("FashionStyle - Lista de Deseos");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMensaje.setText("Error al abrir lista de deseos");
+        }
     }
-}
+
 }

@@ -17,9 +17,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class GestionPedidosController implements Initializable {
 
@@ -57,22 +64,23 @@ public class GestionPedidosController implements Initializable {
         configurarTabla();
         cargarPedidos();
         configurarFiltros();
-        
+
         btnFiltrar.setOnAction(event -> filtrarPedidos());
         btnLimpiarFiltro.setOnAction(event -> limpiarFiltro());
         btnVolver.setOnAction(event -> volver());
     }
-    
+
     private void configurarTabla() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-        
+
         // Botón para cambiar estado
         colAcciones.setCellFactory(param -> new TableCell<>() {
             private final ComboBox<String> cbEstado = new ComboBox<>();
+
             {
                 cbEstado.getItems().addAll("Procesando", "En camino", "Entregado");
                 cbEstado.setOnAction(event -> {
@@ -83,6 +91,7 @@ public class GestionPedidosController implements Initializable {
                     }
                 });
             }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -96,52 +105,80 @@ public class GestionPedidosController implements Initializable {
             }
         });
     }
-    
+
     private void configurarFiltros() {
         cbFiltroEstado.getItems().addAll("Todos", "Procesando", "En camino", "Entregado");
         cbFiltroEstado.setValue("Todos");
     }
-    
+
     private void cargarPedidos() {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_COMPRAS);
-            Type tipo = new TypeToken<List<Compra>>(){}.getType();
-            List<Compra> pedidos = gson.fromJson(reader, tipo);
+            Type tipoMapa = new TypeToken<Map<String, List<Compra>>>() {
+            }.getType();
+            Map<String, List<Compra>> todasLasCompras = gson.fromJson(reader, tipoMapa);
             reader.close();
-            
-            if (pedidos == null) pedidos = new java.util.ArrayList<>();
-            
-            // Asegurar que cada pedido tenga estado
-            for (Compra c : pedidos) {
-                if (c.getEstado() == null || c.getEstado().isEmpty()) {
-                    c.setEstado("Procesando");
+
+            List<Compra> todosLosPedidos = new ArrayList<>();
+
+            if (todasLasCompras != null) {
+                for (Map.Entry<String, List<Compra>> entry : todasLasCompras.entrySet()) {
+                    List<Compra> comprasUsuario = entry.getValue();
+                    if (comprasUsuario != null) {
+                        // Asegurar que cada pedido tenga estado y cliente
+                        for (Compra c : comprasUsuario) {
+                            if (c.getEstado() == null || c.getEstado().isEmpty()) {
+                                c.setEstado("Procesando");
+                            }
+                            if (c.getCliente() == null || c.getCliente().isEmpty()) {
+                                c.setCliente(entry.getKey());
+                            }
+                        }
+                        todosLosPedidos.addAll(comprasUsuario);
+                    }
                 }
             }
-            
-            pedidosOriginal = FXCollections.observableArrayList(pedidos);
-            pedidosList = FXCollections.observableArrayList(pedidos);
+
+            // Ordenar por ID descendente
+            todosLosPedidos.sort((a, b) -> Integer.compare(b.getId(), a.getId()));
+
+            pedidosOriginal = FXCollections.observableArrayList(todosLosPedidos);
+            pedidosList = FXCollections.observableArrayList(todosLosPedidos);
             tablaPedidos.setItems(pedidosList);
-            
+
         } catch (Exception e) {
-            lblMensaje.setText("Error al cargar pedidos");
+            lblMensaje.setText("Error al cargar pedidos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
-    
+
     private void guardarPedidos() {
         try {
             Gson gson = new Gson();
+
+            // Reorganizar los pedidos por cliente
+            Map<String, List<Compra>> todasLasCompras = new HashMap<>();
+
+            for (Compra c : pedidosOriginal) {
+                String clave = c.getCliente() != null ? c.getCliente() : "cliente";
+                List<Compra> comprasCliente = todasLasCompras.getOrDefault(clave, new ArrayList<>());
+                comprasCliente.add(c);
+                todasLasCompras.put(clave, comprasCliente);
+            }
+
             FileWriter writer = new FileWriter(ARCHIVO_COMPRAS);
-            gson.toJson(pedidosOriginal, writer);
+            gson.toJson(todasLasCompras, writer);
             writer.close();
+
         } catch (Exception e) {
-            lblMensaje.setText("Error al guardar cambios");
+            lblMensaje.setText("Error al guardar cambios: " + e.getMessage());
         }
     }
-    
+
     private void cambiarEstado(Compra compra, String nuevoEstado) {
         compra.setEstado(nuevoEstado);
-        
+
         // Actualizar en la lista original
         for (int i = 0; i < pedidosOriginal.size(); i++) {
             if (pedidosOriginal.get(i).getId() == compra.getId()) {
@@ -149,9 +186,9 @@ public class GestionPedidosController implements Initializable {
                 break;
             }
         }
-        
+
         guardarPedidos();
-        
+
         // Refrescar la vista según el filtro actual
         String filtroActual = cbFiltroEstado.getValue();
         if ("Todos".equals(filtroActual)) {
@@ -159,43 +196,57 @@ public class GestionPedidosController implements Initializable {
         } else {
             filtrarPedidos();
         }
-        
+
         lblMensaje.setText("Pedido #" + compra.getId() + " actualizado a: " + nuevoEstado);
     }
-    
+
     private void filtrarPedidos() {
         String filtro = cbFiltroEstado.getValue();
         if (filtro == null || "Todos".equals(filtro)) {
             limpiarFiltro();
             return;
         }
-        
+
         List<Compra> filtrados = pedidosOriginal.stream()
                 .filter(p -> filtro.equals(p.getEstado()))
                 .collect(Collectors.toList());
-        
+
         pedidosList.setAll(filtrados);
         tablaPedidos.setItems(pedidosList);
         lblMensaje.setText("Mostrando pedidos con estado: " + filtro);
     }
-    
+
     private void limpiarFiltro() {
         cbFiltroEstado.setValue("Todos");
         pedidosList.setAll(pedidosOriginal);
         tablaPedidos.setItems(pedidosList);
         lblMensaje.setText("Mostrando todos los pedidos");
     }
-    
+
     private void refrescarTabla() {
         pedidosList.setAll(pedidosOriginal);
         tablaPedidos.refresh();
     }
-    
+
     private void volver() {
-        btnVolver.getScene().getWindow().hide();
-        abrirAdminDashboard();
+    try {
+        // Cerrar ventana actual de Gestión de Pedidos
+        Stage stageActual = (Stage) btnVolver.getScene().getWindow();
+        stageActual.close();
+        
+        // Abrir Admin Dashboard
+        Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Admin");
+        stage.setScene(new Scene(root));
+        stage.show();
+        
+    } catch (Exception e) {
+        lblMensaje.setText("Error al volver");
+        e.printStackTrace();
     }
-    
+}
+
     private void abrirAdminDashboard() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("AdminDashboard.fxml"));

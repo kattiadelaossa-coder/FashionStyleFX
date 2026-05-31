@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.LoginController">
+<AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" styleClass="fondo-login" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.LoginController">
     <children>
         <!-- StackPane para centrar la tarjeta -->
         <StackPane layoutX="0.0" layoutY="0.0" prefHeight="700.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

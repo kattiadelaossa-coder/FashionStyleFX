@@ -16,6 +16,7 @@ public class Producto {
     private String categoria;
     private String imagen;
     private int cantidad;
+    private int stock;  
 
     public Producto() {
     }
@@ -27,9 +28,10 @@ public class Producto {
         this.categoria = categoria;
         this.imagen = imagen;
         this.cantidad = 0;
+        this.stock = 10;  // Stock por defecto
     }
 
-    // Getters y Setters
+    // Getters y Setters existentes...
     public int getId() {
         return id;
     }
@@ -76,5 +78,13 @@ public class Producto {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }

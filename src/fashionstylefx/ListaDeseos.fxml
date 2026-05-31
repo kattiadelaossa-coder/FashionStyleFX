@@ -8,14 +8,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" styleClass="fondo-catalogo" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.ListaDeseosController">
+<AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" styleClass="fondo-pantalla" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.ListaDeseosController">
     <children>
         <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
                 <!-- Header -->
                 <HBox spacing="20.0" alignment="CENTER_LEFT">
                     <children>
-                        <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="❤️ Lista de Deseos" />
+                        <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1E88E5;" text="❤ Lista de Deseos" />
                         <Button fx:id="btnVolver" style="-fx-background-color: transparent; -fx-text-fill: #1E88E5;" text="← Volver" />
                     </children>
                 </HBox>

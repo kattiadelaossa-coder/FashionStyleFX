@@ -19,6 +19,10 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class GestionProductosController implements Initializable {
 
@@ -55,6 +59,8 @@ public class GestionProductosController implements Initializable {
     @FXML
     private TableColumn<Producto, Void> colAcciones;
     @FXML
+    private TableColumn<Producto, Integer> colStock;
+    @FXML
     private Label lblMensaje;
 
     private ObservableList<Producto> productosList;
@@ -64,29 +70,64 @@ public class GestionProductosController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
         cargarProductos();
-        
+
         btnAgregar.setOnAction(event -> agregarProducto());
         btnActualizar.setOnAction(event -> actualizarProducto());
         btnLimpiar.setOnAction(event -> limpiarCampos());
         btnVolver.setOnAction(event -> volver());
-        
+
         tablaProductos.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
             if (selected != null) {
                 cargarProductoEnFormulario(selected);
             }
         });
     }
-    
+
     private void configurarTabla() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         colCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         colImagen.setCellValueFactory(new PropertyValueFactory<>("imagen"));
-        
+
+        // ========== COLUMNA STOCK EDITABLE ==========
+        colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        colStock.setCellFactory(col -> new TableCell<Producto, Integer>() {
+            private final TextField textField = new TextField();
+
+            {
+                textField.textProperty().addListener((obs, oldVal, newVal) -> {
+                    if (getIndex() >= 0) {
+                        Producto producto = getTableView().getItems().get(getIndex());
+                        try {
+                            int nuevoStock = Integer.parseInt(newVal);
+                            producto.setStock(nuevoStock);
+                            guardarProductos();
+                        } catch (NumberFormatException e) {
+                            // No válido, no hacer nada
+                        }
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    textField.setText(String.valueOf(item));
+                    setGraphic(textField);
+                }
+            }
+        });
+        // ===========================================
+
         // Botón eliminar en cada fila
         colAcciones.setCellFactory(param -> new TableCell<>() {
             private final Button btnEliminar = new Button("Eliminar");
+
             {
                 btnEliminar.setStyle("-fx-background-color: #E53935; -fx-text-fill: white; -fx-background-radius: 8;");
                 btnEliminar.setOnAction(event -> {
@@ -94,6 +135,7 @@ public class GestionProductosController implements Initializable {
                     eliminarProducto(p);
                 });
             }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -105,22 +147,23 @@ public class GestionProductosController implements Initializable {
             }
         });
     }
-    
+
     private void cargarProductos() {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(ARCHIVO_PRODUCTOS);
-            Type tipo = new TypeToken<List<Producto>>(){}.getType();
+            Type tipo = new TypeToken<List<Producto>>() {
+            }.getType();
             List<Producto> productos = gson.fromJson(reader, tipo);
             reader.close();
-            
+
             productosList = FXCollections.observableArrayList(productos);
             tablaProductos.setItems(productosList);
         } catch (Exception e) {
             lblMensaje.setText("Error al cargar productos");
         }
     }
-    
+
     private void guardarProductos() {
         try {
             Gson gson = new Gson();
@@ -131,50 +174,50 @@ public class GestionProductosController implements Initializable {
             lblMensaje.setText("Error al guardar productos");
         }
     }
-    
+
     private void agregarProducto() {
         if (txtNombre.getText().isEmpty() || txtPrecio.getText().isEmpty()) {
             lblMensaje.setText("Complete nombre y precio");
             return;
         }
-        
+
         int nuevoId = productosList.size() + 1;
         String nombre = txtNombre.getText();
         double precio = Double.parseDouble(txtPrecio.getText());
         String categoria = txtCategoria.getText();
         String imagen = txtImagen.getText().isEmpty() ? "producto.png" : txtImagen.getText();
-        
+
         Producto nuevo = new Producto(nuevoId, nombre, precio, categoria, imagen);
         productosList.add(nuevo);
         guardarProductos();
         limpiarCampos();
         lblMensaje.setText("Producto agregado correctamente");
     }
-    
+
     private void actualizarProducto() {
         Producto selected = tablaProductos.getSelectionModel().getSelectedItem();
         if (selected == null) {
             lblMensaje.setText("Seleccione un producto para actualizar");
             return;
         }
-        
+
         selected.setNombre(txtNombre.getText());
         selected.setPrecio(Double.parseDouble(txtPrecio.getText()));
         selected.setCategoria(txtCategoria.getText());
         selected.setImagen(txtImagen.getText());
-        
+
         tablaProductos.refresh();
         guardarProductos();
         limpiarCampos();
         lblMensaje.setText("Producto actualizado correctamente");
     }
-    
+
     private void eliminarProducto(Producto producto) {
         productosList.remove(producto);
         guardarProductos();
         lblMensaje.setText("Producto eliminado correctamente");
     }
-    
+
     private void cargarProductoEnFormulario(Producto p) {
         txtId.setText(String.valueOf(p.getId()));
         txtNombre.setText(p.getNombre());
@@ -182,7 +225,7 @@ public class GestionProductosController implements Initializable {
         txtCategoria.setText(p.getCategoria());
         txtImagen.setText(p.getImagen());
     }
-    
+
     private void limpiarCampos() {
         txtId.clear();
         txtNombre.clear();
@@ -191,22 +234,24 @@ public class GestionProductosController implements Initializable {
         txtImagen.clear();
         tablaProductos.getSelectionModel().clearSelection();
     }
-    
+
     private void volver() {
         btnVolver.getScene().getWindow().hide();
         abrirAdminDashboard();
     }
-    
-    private void abrirAdminDashboard() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("AdminDashboard.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("FashionStyle - Admin");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            lblMensaje.setText("Error al volver");
-        }
+
+   private void abrirAdminDashboard() {
+    try {
+        Stage stageActual = (Stage) btnVolver.getScene().getWindow();
+        stageActual.close();
+        
+        Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Admin");
+        stage.setScene(new Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        lblMensaje.setText("Error al volver");
     }
+}
 }

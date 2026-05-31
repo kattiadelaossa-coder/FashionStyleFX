@@ -14,10 +14,15 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -255,15 +260,24 @@ public class CatalogoController implements Initializable {
         Label lblCategoria = new Label(producto.getCategoria());
         lblCategoria.setStyle("-fx-text-fill: #666666; -fx-font-size: 11px;");
 
+        // ========== BOTÓN AGREGAR CON VALIDACIÓN DE STOCK ==========
         Button btnAgregar = new Button("🛒 Agregar");
-        btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+
+        // Verificar si hay stock disponible
+        if (producto.getStock() <= 0) {
+            btnAgregar.setDisable(true);
+            btnAgregar.setStyle("-fx-background-color: #CCCCCC; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+        } else {
+            btnAgregar.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+        }
         btnAgregar.setOnAction(event -> agregarAlCarrito(producto));
+        // ============================================================
 
         // Botón de corazón para agregar a lista de deseos
-        // Botón de corazón para agregar a lista de deseos
-Button btnDeseo = new Button("❤");
-btnDeseo.setStyle("-fx-background-color: transparent; -fx-text-fill: #E53935; -fx-cursor: hand; -fx-font-size: 16px;");
-btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
+        Button btnDeseo = new Button("❤");
+        btnDeseo.setStyle("-fx-background-color: transparent; -fx-text-fill: #E53935; -fx-cursor: hand; -fx-font-size: 16px;");
+        btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
+
         // Agregar la imagen primero, luego el resto
         tarjeta.getChildren().addAll(imagen, lblNombre, lblPrecio, lblCategoria, btnAgregar, btnDeseo);
 
@@ -271,6 +285,12 @@ btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
     }
 
     private void agregarAlCarrito(Producto producto) {
+        // Verificar stock disponible
+        if (producto.getStock() <= 0) {
+            mostrarAlertaError("No hay stock disponible de " + producto.getNombre());
+            return;
+        }
+
         boolean encontrado = false;
         ColaCarrito temp = new ColaCarrito();
         Producto existente = null;
@@ -278,6 +298,11 @@ btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
         while (!carrito.colaVacia()) {
             Producto p = carrito.valorFrente();
             if (p.getId() == producto.getId()) {
+                // Verificar que no supere el stock disponible
+                if (p.getCantidad() + 1 > producto.getStock()) {
+                    mostrarAlertaError("No hay suficiente stock de " + producto.getNombre());
+                    return;
+                }
                 encontrado = true;
                 existente = p;
             }
@@ -297,6 +322,7 @@ btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
                     producto.getPrecio(), producto.getCategoria(),
                     producto.getImagen());
             nuevo.setCantidad(1);
+            nuevo.setStock(producto.getStock());
             carrito.agregar(nuevo);
         }
 
@@ -304,7 +330,7 @@ btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
         mostrarAlertaExito(producto.getNombre() + " agregado al carrito");
     }
 
-    private void abrirPerfil() {
+      private void abrirPerfil() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Perfil.fxml"));
             javafx.scene.Parent root = loader.load();
@@ -318,36 +344,44 @@ btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
         }
     }
 
+
     private void abrirListaDeseos() {
     try {
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListaDeseos.fxml"));
-        javafx.scene.Parent root = loader.load();
-        javafx.stage.Stage stage = new javafx.stage.Stage();
+        // Cerrar catálogo
+        Stage stageActual = (Stage) btnListaDeseos.getScene().getWindow();
+        stageActual.close();
+        
+        Parent root = FXMLLoader.load(getClass().getResource("ListaDeseos.fxml"));
+        Stage stage = new Stage();
         stage.setTitle("FashionStyle - Lista de Deseos");
-        stage.setScene(new javafx.scene.Scene(root));
+        stage.setScene(new Scene(root));
         stage.show();
+        
     } catch (Exception e) {
-        mostrarAlertaError("Error al abrir lista de deseos");
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir lista de deseos");
     }
 }
 
     private void abrirCarrito() {
-        try {
-            // Método más seguro para cargar el FXML
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
-            loader.setLocation(getClass().getResource("Carrito.fxml"));
-            javafx.scene.Parent root = loader.load();
-
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("FashionStyle - Carrito");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            lblMensaje.setText("Error al abrir carrito: " + e.getMessage());
-        }
+    try {
+        // Cerrar la ventana actual de catálogo
+        Stage stageActual = (Stage) btnCarrito.getScene().getWindow();
+        stageActual.close();
+        
+        // Abrir el carrito
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Carrito.fxml"));
+        javafx.scene.Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Carrito");
+        stage.setScene(new javafx.scene.Scene(root));
+        stage.show();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir carrito");
     }
+}
 
     private void handleCerrarSesion() {
         btnCerrarSesion.getScene().getWindow().hide();
@@ -368,38 +402,45 @@ btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
     }
 
     private void abrirHistorial() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("Historial.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("FashionStyle - Mis Compras");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            lblMensaje.setText("Error al abrir historial");
-        }
+    try {
+        // Cerrar catálogo
+        Stage stageActual = (Stage) btnMisCompras.getScene().getWindow();
+        stageActual.close();
+        
+        Parent root = FXMLLoader.load(getClass().getResource("Historial.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Mis Compras");
+        stage.setScene(new Scene(root));
+        stage.show();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        lblMensaje.setText("Error al abrir historial");
     }
+}
 
     private void agregarAListaDeseos(Producto producto) {
         try {
-            // 1. Leer los deseos que ya están guardados
+            String email = LoginController.getUsuarioActual().getCorreo();
+
             Gson gson = new Gson();
-            List<Producto> deseos = new ArrayList<>();
+            Map<String, List<Producto>> datos = new HashMap<>();
             File archivo = new File("src/fashionstylefx/deseos.json");
 
             if (archivo.exists()) {
                 FileReader reader = new FileReader("src/fashionstylefx/deseos.json");
-                Type tipoLista = new TypeToken<List<Producto>>() {
+                Type tipo = new TypeToken<Map<String, List<Producto>>>() {
                 }.getType();
-                deseos = gson.fromJson(reader, tipoLista);
+                datos = gson.fromJson(reader, tipo);
                 reader.close();
-                if (deseos == null) {
-                    deseos = new ArrayList<>();
+                if (datos == null) {
+                    datos = new HashMap<>();
                 }
             }
 
-            // 2. Verificar si el producto ya está en la lista de deseos
+            List<Producto> deseos = datos.getOrDefault(email, new ArrayList<>());
+
+            // Verificar si ya existe
             for (Producto p : deseos) {
                 if (p.getId() == producto.getId()) {
                     mostrarAlertaError("El producto ya está en tu lista de deseos");
@@ -407,15 +448,16 @@ btnDeseo.setOnAction(event -> agregarAListaDeseos(producto));
                 }
             }
 
-            // 3. Agregar el nuevo producto
+            // Agregar nuevo producto
             Producto nuevo = new Producto(producto.getId(), producto.getNombre(),
                     producto.getPrecio(), producto.getCategoria(),
                     producto.getImagen());
             deseos.add(nuevo);
 
-            // 4. Guardar en el archivo JSON
+            datos.put(email, deseos);
+
             FileWriter writer = new FileWriter("src/fashionstylefx/deseos.json");
-            gson.toJson(deseos, writer);
+            gson.toJson(datos, writer);
             writer.close();
 
             mostrarAlertaExito(producto.getNombre() + " agregado a lista de deseos");

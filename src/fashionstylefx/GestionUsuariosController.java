@@ -19,6 +19,10 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class GestionUsuariosController implements Initializable {
 
@@ -192,11 +196,24 @@ public class GestionUsuariosController implements Initializable {
         tablaUsuarios.getSelectionModel().clearSelection();
     }
     
-    private void volver() {
-        btnVolver.getScene().getWindow().hide();
-        abrirAdminDashboard();
+   private void volver() {
+    try {
+        // Cerrar ventana actual de Gestión de Usuarios
+        Stage stageActual = (Stage) btnVolver.getScene().getWindow();
+        stageActual.close();
+        
+        // Abrir Admin Dashboard
+        Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("FashionStyle - Admin");
+        stage.setScene(new Scene(root));
+        stage.show();
+        
+    } catch (Exception e) {
+        lblMensaje.setText("Error al volver");
+        e.printStackTrace();
     }
-    
+}
     private void abrirAdminDashboard() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("AdminDashboard.fxml"));

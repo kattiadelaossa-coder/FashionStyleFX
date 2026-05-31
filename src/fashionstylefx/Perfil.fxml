@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@estilos.css" styleClass="fondo-catalogo" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.PerfilController">
+<AnchorPane prefHeight="600.0" prefWidth="500.0" stylesheets="@estilos.css" styleClass="fondo-catalogo" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fashionstylefx.PerfilController">
     <children>
         <VBox spacing="20.0" alignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
